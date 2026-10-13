@@ -1,7 +1,7 @@
-<!DOCTYPE html>
-<!-- saved from url=(0073)file:///C:/Users/skrhal/Desktop/TRAINING%20AI/vessel-dashboard/index.html -->
-<html lang="id"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Vessel Monitor</title>
 <style>
@@ -31,7 +31,7 @@ button{cursor:pointer;border:1px solid var(--line);background:var(--card);border
 button:hover{background:var(--hover)}button:active{transform:scale(.97)}
 header button{background:rgba(255,255,255,.7);border-color:rgba(10,42,74,.2)}
 :root[data-theme="dark"] header button{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.3);color:#fff}
-main{padding:18px 20px 30px;display:grid;gap:16px;max-width:1500px;margin:0 auto}
+main{padding:18px 20px 30px;display:grid;grid-template-columns:minmax(0,1fr);gap:16px;max-width:1500px;margin:0 auto}
 .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
 .card,.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;box-shadow:var(--shadow)}
 .card{border-left:5px solid var(--sea);cursor:pointer;text-align:left;transition:transform .15s,box-shadow .15s;animation:rise .5s both;display:flex;gap:10px;align-items:center}
@@ -87,33 +87,892 @@ a.link{color:var(--sea);cursor:pointer;text-decoration:underline}
 <body>
 <header>
 <div class="top">
-<div class="brand"><img class="logo" src="./Vessel Monitor_files/logo.png" alt="Heung-A Line" onerror="this.onerror=null;this.src='https://ebiz.heungaline.com/assets/images/logo.png'">
-<div class="titles"><h1>Vessel Monitor <span id="pol">· POL Jakarta (IDJKT)</span></h1><p class="sub">Sailing schedule · Open/Closing</p></div></div>
-<div class="tools"><div><div class="clock"><span class="pulse"></span><span id="clock">Sen, 12 Okt, 16.10.08 WIB</span></div><div class="mute" id="upd">Data diperbarui 10 menit lalu · 2026-10-12 16:00</div></div>
-<button id="refresh" title="Muat ulang data">↻ Refresh</button><button id="csv" title="Ekspor baris yang tampil">⬇ CSV</button><button id="theme" title="Ganti tema">☀/☾</button><button id="print">Cetak</button></div>
+<div class="brand"><img class="logo" src="data:image/png;base64,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" alt="Heung-A Line" onerror="this.onerror=null;this.src='https://ebiz.heungaline.com/assets/images/logo.png'">
+<div class="titles"><h1>Vessel Monitor <span id="pol"></span></h1><p class="sub">Sailing schedule &middot; Open/Closing</p></div></div>
+<div class="tools"><div><div class="clock"><span class="pulse"></span><span id="clock"></span></div><div class="mute" id="upd"></div></div>
+<button id="refresh" title="Muat ulang data">&#8635; Refresh</button><button id="csv" title="Ekspor baris yang tampil">&#11015; CSV</button><button id="theme" title="Ganti tema">&#9728;/&#9790;</button><button id="print">Cetak</button></div>
 </div>
-<svg class="waves" viewBox="0 0 1240 30" preserveAspectRatio="none"><path class="wave1" d="M-40 16 Q35 2 110 16 T260 16 T410 16 T560 16 T710 16 T860 16 T1010 16 T1160 16 T1310 16 V30 H-40Z" fill="var(--bg)" opacity=".55"></path><path d="M0 22 Q75 8 150 22 T300 22 T450 22 T600 22 T750 22 T900 22 T1050 22 T1200 22 T1350 22 V30 H0Z" fill="var(--bg)"></path></svg>
+<svg class="waves" viewBox="0 0 1240 30" preserveAspectRatio="none"><path class="wave1" d="M-40 16 Q35 2 110 16 T260 16 T410 16 T560 16 T710 16 T860 16 T1010 16 T1160 16 T1310 16 V30 H-40Z" fill="var(--bg)" opacity=".55"/><path d="M0 22 Q75 8 150 22 T300 22 T450 22 T600 22 T750 22 T900 22 T1050 22 T1200 22 T1350 22 V30 H0Z" fill="var(--bg)"/></svg>
 </header>
 <main>
-<div class="cards" id="cards"><button class="card  active" data-s="" style="animation-delay:0ms"><span class="ic">⛵</span><span><span class="mute">Semua</span><b data-n="36">36</b></span></button><button class="card d " data-s="DELAY" style="animation-delay:60ms"><span class="ic">⏱</span><span><span class="mute">Delay</span><b data-n="7">7</b></span></button><button class="card s " data-s="SKIP" style="animation-delay:120ms"><span class="ic">⛔</span><span><span class="mute">Skip</span><b data-n="1">1</b></span></button><button class="card v " data-s="VESSEL CHANGE" style="animation-delay:180ms"><span class="ic">⇄</span><span><span class="mute">Vessel change</span><b data-n="0">0</b></span></button><button class="card o " data-s="ON TIME" style="animation-delay:240ms"><span class="ic">✓</span><span><span class="mute">On time</span><b data-n="28">28</b></span></button><button class="card c " data-s="__closing" style="animation-delay:300ms"><span class="ic">⚠</span><span><span class="mute">Closing &lt; 48 jam</span><b data-n="1">1</b></span></button></div>
-<section class="panel"><h2>📅 Keberangkatan 30 hari ke depan <span class="mute">(klik tanggal untuk memfilter)</span></h2><div class="cal" id="cal"><div class="day  today " data-k="2026-10-12" title=""><small>Sen</small><b>12</b><small>Okt</small></div><div class="day   " data-k="2026-10-13" title=""><small>Sel</small><b>13</b><small>Okt</small></div><div class="day   " data-k="2026-10-14" title=""><small>Rab</small><b>14</b><small>Okt</small></div><div class="day has c-ONTIME  " data-k="2026-10-15" title="KMTC SHIMIZU 2609N (ON TIME)"><small>Kam</small><b>15</b><small>Okt</small><span class="n">1</span></div><div class="day has c-DELAY  " data-k="2026-10-16" title="KMTC XIAMEN 2608N (DELAY)"><small>Jum</small><b>16</b><small>Okt</small><span class="n">1</span></div><div class="day   " data-k="2026-10-17" title=""><small>Sab</small><b>17</b><small>Okt</small></div><div class="day has c-DELAY  " data-k="2026-10-18" title="HOCHIMINH VOYAGER 2609N (DELAY)"><small>Min</small><b>18</b><small>Okt</small><span class="n">1</span></div><div class="day   " data-k="2026-10-19" title=""><small>Sen</small><b>19</b><small>Okt</small></div><div class="day   " data-k="2026-10-20" title=""><small>Sel</small><b>20</b><small>Okt</small></div><div class="day   " data-k="2026-10-21" title=""><small>Rab</small><b>21</b><small>Okt</small></div><div class="day has c-ONTIME  sel" data-k="2026-10-22" title="CHENNAI VOYAGER 2609N (ON TIME)
-TIANJIN VOYAGER 2609N (ON TIME)
-HEUNG-A BANGKOK 2612N (ON TIME)"><small>Kam</small><b>22</b><small>Okt</small><span class="n">3</span></div><div class="day   " data-k="2026-10-23" title=""><small>Jum</small><b>23</b><small>Okt</small></div><div class="day   " data-k="2026-10-24" title=""><small>Sab</small><b>24</b><small>Okt</small></div><div class="day   " data-k="2026-10-25" title=""><small>Min</small><b>25</b><small>Okt</small></div><div class="day   " data-k="2026-10-26" title=""><small>Sen</small><b>26</b><small>Okt</small></div><div class="day has c-DELAY  " data-k="2026-10-27" title="YEOSU VOYAGER 2608N (DELAY)"><small>Sel</small><b>27</b><small>Okt</small><span class="n">1</span></div><div class="day has c-ONTIME  " data-k="2026-10-28" title="KWANGYANG VOYAGER 2609N (ON TIME)
-KMTC HOCHIMINH 2610N (ON TIME)"><small>Rab</small><b>28</b><small>Okt</small><span class="n">2</span></div><div class="day has c-ONTIME  " data-k="2026-10-29" title="STARSHIP JUPITER 2608N (ON TIME)
-INCHEON VOYAGER 2608N (ON TIME)"><small>Kam</small><b>29</b><small>Okt</small><span class="n">2</span></div><div class="day   " data-k="2026-10-30" title=""><small>Jum</small><b>30</b><small>Okt</small></div><div class="day has c-ONTIME  " data-k="2026-10-31" title="HAPPY LUCKY 2641N (ON TIME)"><small>Sab</small><b>31</b><small>Okt</small><span class="n">1</span></div><div class="day has c-ONTIME  " data-k="2026-11-01" title="BELAWAN 2610N (ON TIME)"><small>Min</small><b>1</b><small>Nov</small><span class="n">1</span></div><div class="day   " data-k="2026-11-02" title=""><small>Sen</small><b>2</b><small>Nov</small></div><div class="day   " data-k="2026-11-03" title=""><small>Sel</small><b>3</b><small>Nov</small></div><div class="day has c-ONTIME  " data-k="2026-11-04" title="KMTC SURABAYA 2608N (ON TIME)"><small>Rab</small><b>4</b><small>Nov</small><span class="n">1</span></div><div class="day has c-DELAY  " data-k="2026-11-05" title="SAWASDEE RIGEL 2610N (SKIP)
-SAWASDEE SUNRISE 2612N (DELAY)"><small>Kam</small><b>5</b><small>Nov</small><span class="n">2</span></div><div class="day   " data-k="2026-11-06" title=""><small>Jum</small><b>6</b><small>Nov</small></div><div class="day   " data-k="2026-11-07" title=""><small>Sab</small><b>7</b><small>Nov</small></div><div class="day has c-ONTIME  " data-k="2026-11-08" title="SHANGHAI VOYAGER 2609N (ON TIME)
-SAWASDEE SHANGHAI 2640N (ON TIME)"><small>Min</small><b>8</b><small>Nov</small><span class="n">2</span></div><div class="day   " data-k="2026-11-09" title=""><small>Sen</small><b>9</b><small>Nov</small></div><div class="day   " data-k="2026-11-10" title=""><small>Sel</small><b>10</b><small>Nov</small></div></div></section>
-<section class="panel"><h2>🚢 Jadwal per rute <span class="mute" id="count">(3 dari 36)</span><span id="chips"><span class="chip" style="background:var(--sea)">Tanggal 2026-10-22</span></span></h2>
-<div class="tabs" id="tabs"><button class="tab active" data-sv="" title="Semua service">Semua<small>36</small><span class="dl" title="delay">7</span></button><button class="tab " data-sv="KI1" style="border-color:#1b7fb8" title="IDSUB → HKHKG → KRKAN → KRUSN → KRPUS → SGSIN">KI1<small>9</small></button><button class="tab " data-sv="ANX" style="border-color:#e08a00" title="VNSGN → HKHKG → CNSHK → KRINC → KRPUS → KRUSN → CNSHA → THLCH">ANX<small>8</small><span class="dl" title="delay">3</span></button><button class="tab " data-sv="PCI2" style="border-color:#14935a" title="IDSRG → THLCH → CNSHA → KRPUS → KRKAN">PCI2<small>10</small><span class="dl" title="delay">4</span></button><button class="tab " data-sv="PCI" style="border-color:#6a3fc4" title="IDSUB → VNSGN → CNSHA → KRPUS → KRKAN">PCI<small>9</small></button></div>
-<div class="bar"><input id="q" type="search" placeholder="Cari vessel, voyage, port, alasan...  ( / )"><select id="fstatus"><option value="">Semua status</option><option>ON TIME</option><option>DELAY</option><option>SKIP</option></select><button id="reset">Reset</button></div>
-<div class="scroll"><table id="sched"><tbody><tr><th class="sort" data-k="vessel">Vessel / Voyage</th><th class="sort" data-k="pod">POD</th><th class="sort" data-k="etd">ETD</th><th class="sort" data-k="eta">ETA</th><th class="sort" data-k="status">Status</th><th class="sort" data-k="reason">Alasan</th><th>Aksi</th></tr><tr class="grp"><td colspan="7">Service KI1 <span class="mute">· 1 voyage · IDSUB → HKHKG → KRKAN → KRUSN → KRPUS → SGSIN</span></td></tr><tr class="row" data-i="4"><td><span class="chip" style="background:#1b7fb8">KI1</span> TIANJIN VOYAGER 2609N</td><td>IDSUB → HKHKG → KRKAN → KRUSN → KRPUS → SGSIN</td><td>2026-10-22<div class="cd">ETD 10 hari lagi</div><div class="prog "><i style="width:67.65750520833333%"></i></div></td><td>2026-10-23</td><td><span class="badge ONTIME">✓ ON TIME</span></td><td>Booking dipindahkan ke voyage ini (email 12 Okt); jadwal normal di ebiz</td><td></td></tr><tr class="grp"><td colspan="7">Service PCI2 <span class="mute">· 1 voyage · IDSRG → THLCH → CNSHA → KRPUS → KRKAN</span></td></tr><tr class="row" data-i="5"><td><span class="chip" style="background:#14935a">PCI2</span> HEUNG-A BANGKOK 2612N</td><td>IDSRG → THLCH → CNSHA → KRPUS → KRKAN</td><td>2026-10-22<div class="cd">ETD 10 hari lagi</div><div class="prog "><i style="width:67.51861631944445%"></i></div></td><td>2026-10-23</td><td><span class="badge ONTIME">✓ ON TIME</span></td><td>-</td><td></td></tr><tr class="grp"><td colspan="7">Service PCI <span class="mute">· 1 voyage · IDSUB → VNSGN → CNSHA → KRPUS → KRKAN</span></td></tr><tr class="row" data-i="3"><td><span class="chip" style="background:#6a3fc4">PCI</span> CHENNAI VOYAGER 2609N</td><td>IDSUB → VNSGN → CNSHA → KRPUS → KRKAN</td><td>2026-10-22<div class="cd">ETD 10 hari lagi</div><div class="prog "><i style="width:68.35194965277778%"></i></div></td><td>2026-10-23</td><td><span class="badge ONTIME">✓ ON TIME</span></td><td>-</td><td></td></tr></tbody></table></div><p class="mute">Klik baris untuk detail, klik judul kolom untuk mengurutkan. Pintasan: <span class="kbd">/</span> cari, <span class="kbd">Esc</span> reset.</p></section>
-<section class="panel"><h2>⛵ Open / Closing</h2><div class="scroll"><table id="oc"><tbody><tr><th>Vessel / Voyage</th><th>Open stack</th><th>Docu closing</th><th>CNTR closing</th></tr><tr class="grp"><td colspan="4">Service KI1</td></tr><tr><td>KMTC SHIMIZU 2609N<br><span class="mute">KI1 · IDSUB → HKHKG → KRKAN → KRUSN → KRPUS → SGSIN</span></td><td>2026-10-09 01:00</td><td>TBA</td><td>2026-10-12 05:00<div class="cd">sudah lewat</div></td></tr><tr><td>TIANJIN VOYAGER 2609N<br><span class="mute">KI1 · IDSUB → HKHKG → KRKAN → KRUSN → KRPUS → SGSIN</span></td><td>TBA</td><td>TBA</td><td>TBA</td></tr><tr><td>KMTC HOCHIMINH 2610N<br><span class="mute">KI1 · IDSUB → HKHKG → KRKAN → KRUSN → KRPUS → SGSIN</span></td><td>TBA</td><td>TBA</td><td>TBA</td></tr><tr class="more"><td colspan="4"><a class="link" data-x="o:KI1">Lihat semua (9)</a></td></tr><tr class="grp"><td colspan="4">Service ANX</td></tr><tr><td>KMTC XIAMEN 2608N<br><span class="mute">ANX · VNSGN → HKHKG → CNSHK → KRINC → KRPUS → KRUSN → CNSHA → THLCH</span></td><td>2026-10-10 01:00</td><td>TBA</td><td>2026-10-13 23:00<div class="cd soon">1 hari 6 jam lagi</div><div class="prog " title="Window open → closing"><i style="width:67.18531530732861%"></i></div></td></tr><tr><td>YEOSU VOYAGER 2608N<br><span class="mute">ANX · VNSGN → CNSHK → KRINC → KRPUS → KRUSN → CNSHA → THLCH</span></td><td>TBA</td><td>TBA</td><td>TBA</td></tr><tr><td>STARSHIP JUPITER 2608N<br><span class="mute">ANX · VNSGN → HKHKG → CNSHK → KRINC → KRPUS → KRUSN → CNSHA → THLCH</span></td><td>TBA</td><td>TBA</td><td>TBA</td></tr><tr class="more"><td colspan="4"><a class="link" data-x="o:ANX">Lihat semua (8)</a></td></tr><tr class="grp"><td colspan="4">Service PCI2</td></tr><tr><td>HOCHIMINH VOYAGER 2609N<br><span class="mute">PCI2 · IDSRG → THLCH → CNSHA → KRPUS → KRKAN</span></td><td>2026-10-13 01:00</td><td>TBA</td><td>2026-10-16 15:00<div class="cd ">3 hari 22 jam lagi</div><div class="prog " title="Window open → closing"><i style="width:0%"></i></div></td></tr><tr><td>HEUNG-A BANGKOK 2612N<br><span class="mute">PCI2 · IDSRG → THLCH → CNSHA → KRPUS → KRKAN</span></td><td>TBA</td><td>TBA</td><td>TBA</td></tr><tr><td>SAWASDEE SUNRISE 2612N<br><span class="mute">PCI2 · IDSRG → THLCH → CNSHA → KRPUS → KRKAN</span></td><td>TBA</td><td>TBA</td><td>TBA</td></tr><tr class="more"><td colspan="4"><a class="link" data-x="o:PCI2">Lihat semua (9)</a></td></tr><tr class="grp"><td colspan="4">Service PCI</td></tr><tr><td>CHENNAI VOYAGER 2609N<br><span class="mute">PCI · IDSUB → VNSGN → CNSHA → KRPUS → KRKAN</span></td><td>TBA</td><td>TBA</td><td>TBA</td></tr><tr><td>KWANGYANG VOYAGER 2609N<br><span class="mute">PCI · IDSUB → VNSGN → CNSHA → KRKAN → KRPUS</span></td><td>TBA</td><td>TBA</td><td>TBA</td></tr><tr><td>INCHEON VOYAGER 2608N<br><span class="mute">PCI · IDSUB → CNSHA → KRPUS → KRKAN</span></td><td>TBA</td><td>TBA</td><td>TBA</td></tr><tr class="more"><td colspan="4"><a class="link" data-x="o:PCI">Lihat semua (9)</a></td></tr></tbody></table></div></section>
-<section class="panel"><h2>📖 Riwayat perubahan</h2><ul class="tl" id="hist"><li data-i="⏱"><span class="mute">2026-10-12 16:00</span><br>HOCHIMINH VOYAGER 2609N: DELAY ETD 2026-10-16 08:30 → 2026-10-18 10:00; alasan belum ditemukan</li><li data-i="⏱"><span class="mute">2026-10-12 16:00</span><br>SAWASDEE SUNRISE 2612N: DELAY ETD 2026-10-31 23:00 → 2026-11-05 21:00; alasan belum ditemukan</li><li data-i="✨"><span class="mute">2026-10-12 16:00</span><br>SAWASDEE SHANGHAI 2640N: voyage baru di ebiz (ETD 2026-11-08 23:00)</li><li data-i="⏱"><span class="mute">2026-10-12 16:00</span><br>HOCHIMINH VOYAGER 2610N: DELAY ETD 2026-11-11 18:30 → 2026-11-13 20:00; alasan belum ditemukan</li><li data-i="✨"><span class="mute">2026-10-12 16:00</span><br>KMTC SURABAYA 2609N: voyage baru di ebiz (ETD 2026-12-02 16:30)</li><li data-i="⏱"><span class="mute">2026-10-12 16:00</span><br>SAWASDEE SUNRISE 2613N: DELAY ETD 2026-11-28 23:00 → 2026-12-03 21:00; alasan belum ditemukan</li><li data-i="✨"><span class="mute">2026-10-12 16:00</span><br>KMTC SHIMIZU 2611N: voyage baru di ebiz (ETD 2026-12-06 19:30)</li><li data-i="✨"><span class="mute">2026-10-12 16:00</span><br>SAWASDEE SHANGHAI 2641N: voyage baru di ebiz (ETD 2026-12-06 23:00)</li><li data-i="✨"><span class="mute">2026-10-12 16:00</span><br>SHANGHAI VOYAGER 2610N: voyage baru di ebiz (ETD 2026-12-07 18:00)</li><li data-i="✨"><span class="mute">2026-10-12 16:00</span><br>HOCHIMINH VOYAGER 2611N: voyage baru di ebiz (ETD 2026-12-11 20:00)</li><li data-i="⛔"><span class="mute">2026-10-12 16:00</span><br>SAWASDEE RIGEL 2610N: SKIP (hilang dari ebiz, sebelumnya ETD 2026-11-05 01:30); alasan belum ditemukan</li><li data-i="⛵"><span class="mute">2026-10-12</span><br>Open/closing diisi: KMTC XIAMEN 2608N, HOCHIMINH VOYAGER 2609N, KMTC SHIMIZU 2609N</li><li data-i="⛔"><span class="mute">2026-10-12 11:17</span><br>YEOSU VOYAGER 2608N: berth congestion IDJKT 1-2 hari (ETD 27 Okt); HKHKG di-skip (email Sinokor)</li><li data-i="⏱"><span class="mute">2026-10-12 11:17</span><br>YEOSU VOYAGER 2609N: berth congestion IDJKT 1 hari (ETD 22 Nov) (email Sinokor)</li><li data-i="⏱"><span class="mute">2026-10-12</span><br>KMTC XIAMEN 2608N ditandai DELAY di ebiz (ETD 16 Okt 14:00); alasan belum ditemukan</li><li data-i="⛵"><span class="mute">2026-10-12</span><br>Data jadwal Jakarta diambil dari ebiz (30 voyage s/d 28 Nov); closing semua TBA</li></ul></section>
+<div class="cards" id="cards"></div>
+<section class="panel"><h2>&#128197; Keberangkatan 30 hari ke depan <span class="mute">(klik tanggal untuk memfilter)</span></h2><div class="cal" id="cal"></div></section>
+<section class="panel"><h2>&#128674; Jadwal per rute <span class="mute" id="count"></span><span id="chips"></span></h2>
+<div class="tabs" id="tabs"></div>
+<div class="bar"><input id="q" type="search" placeholder="Cari vessel, voyage, port, alasan...  ( / )"><select id="fstatus"><option value="">Semua status</option></select><button id="reset">Reset</button></div>
+<div class="scroll"><table id="sched"></table></div><p class="mute">Klik baris untuk detail, klik judul kolom untuk mengurutkan. Pintasan: <span class="kbd">/</span> cari, <span class="kbd">Esc</span> reset.</p></section>
+<section class="panel"><h2>&#9973; Open / Closing</h2><div class="scroll"><table id="oc"></table></div></section>
+<section class="panel"><h2>&#128214; Riwayat perubahan</h2><ul class="tl" id="hist"></ul></section>
 </main>
-<dialog id="dlg"><b id="dtitle">Teks delay notice</b><textarea id="dtext" readonly=""></textarea>
+<dialog id="dlg"><b id="dtitle">Teks delay notice</b><textarea id="dtext" readonly></textarea>
 <div class="bar"><button id="copy">Salin teks</button><button id="close">Tutup</button><span class="mute" id="copied"></span></div>
 <p class="mute">Hanya membuat teks. Tidak ada email yang dikirim; tempel ke email Outlook sendiri.</p></dialog>
-<script src="./Vessel Monitor_files/data.js"></script>
+<script>
+// Sumber utama: ebiz Schedule (Jakarta). Alasan: email operator Sinokor. Closing TBA bila kosong di ebiz. Shipper = CONTOH.
+window.DASHBOARD_DATA = {
+ "updatedAt": "2026-10-13T09:00:00",
+ "pol": "Jakarta (IDJKT)",
+ "voyages": [
+  {
+   "vessel": "KMTC SHIMIZU",
+   "voyage": "2609N",
+   "service": "KI1",
+   "pod": "IDSUB → HKHKG → KRKAN → KRUSN → KRPUS → SGSIN",
+   "oldEtd": null,
+   "etd": "2026-10-15 22:30",
+   "oldEta": null,
+   "eta": "2026-10-17",
+   "status": "ON TIME",
+   "reason": "",
+   "source": {
+    "from": "ebiz.heungaline.com/Schedule (GetScheduleJsonData, POL IDJKT)",
+    "date": "2026-10-12",
+    "subject": "Jadwal Outbound Jakarta"
+   },
+   "docClosing": "TBA",
+   "cntrClosing": "2026-10-12 05:00",
+   "openStack": "2026-10-09 01:00",
+   "etaJkt": "2026-10-12 06:00",
+   "terminal": "JICT",
+   "closingSource": "Info open/closing dari user (email operator/HAL), 2026-10-12"
+  },
+  {
+   "vessel": "KMTC XIAMEN",
+   "voyage": "2608N",
+   "service": "ANX",
+   "pod": "VNSGN → HKHKG → CNSHK → KRINC → KRPUS → KRUSN → CNSHA → THLCH",
+   "oldEtd": null,
+   "etd": "2026-10-16 14:00",
+   "oldEta": null,
+   "eta": "2026-10-19",
+   "status": "DELAY",
+   "reason": "Ditandai DELAY di ebiz; alasan belum ditemukan di email",
+   "source": {
+    "from": "ebiz.heungaline.com/Schedule (GetScheduleJsonData, POL IDJKT)",
+    "date": "2026-10-12",
+    "subject": "Jadwal Outbound Jakarta"
+   },
+   "docClosing": "TBA",
+   "cntrClosing": "2026-10-13 23:00",
+   "openStack": "2026-10-10 01:00",
+   "etaJkt": "2026-10-13 15:00",
+   "terminal": "TPK KOJA",
+   "closingSource": "Info open/closing dari user (email operator/HAL), 2026-10-12"
+  },
+  {
+   "vessel": "HOCHIMINH VOYAGER",
+   "voyage": "2609N",
+   "service": "PCI2",
+   "pod": "IDSRG → THLCH → CNSHA → KRPUS → KRKAN",
+   "oldEtd": "2026-10-16 08:30",
+   "etd": "2026-10-18 10:00",
+   "oldEta": "2026-10-17",
+   "eta": "2026-10-19",
+   "status": "DELAY",
+   "reason": "alasan belum ditemukan (email operator tidak dapat dibaca pada run otomatis)",
+   "source": {
+    "from": "ebiz.heungaline.com/Schedule (GetScheduleJsonData, POL IDJKT)",
+    "date": "2026-10-12",
+    "subject": "Jadwal Outbound Jakarta"
+   },
+   "docClosing": "TBA",
+   "cntrClosing": "2026-10-16 15:00",
+   "openStack": "2026-10-13 01:00",
+   "etaJkt": "2026-10-15 10:00",
+   "closingSource": "Info open/closing dari user (email operator/HAL), 2026-10-12"
+  },
+  {
+   "vessel": "CHENNAI VOYAGER",
+   "voyage": "2609N",
+   "service": "PCI",
+   "pod": "IDSUB → VNSGN → CNSHA → KRPUS → KRKAN",
+   "oldEtd": null,
+   "etd": "2026-10-22 04:00",
+   "oldEta": null,
+   "eta": "2026-10-23",
+   "status": "ON TIME",
+   "reason": "",
+   "source": {
+    "from": "ebiz.heungaline.com/Schedule (GetScheduleJsonData, POL IDJKT)",
+    "date": "2026-10-12",
+    "subject": "Jadwal Outbound Jakarta"
+   },
+   "docClosing": "TBA",
+   "cntrClosing": "TBA",
+   "openStack": "TBA"
+  },
+  {
+   "vessel": "TIANJIN VOYAGER",
+   "voyage": "2609N",
+   "service": "KI1",
+   "pod": "IDSUB → HKHKG → KRKAN → KRUSN → KRPUS → SGSIN",
+   "oldEtd": null,
+   "etd": "2026-10-22 09:00",
+   "oldEta": null,
+   "eta": "2026-10-23",
+   "status": "ON TIME",
+   "reason": "Booking dipindahkan ke voyage ini (email 12 Okt); jadwal normal di ebiz",
+   "source": {
+    "from": "HAL IQLIMA (email ke customer)",
+    "date": "2026-10-12 11:25",
+    "subject": "BC TJVY 2609N // POSTPONED TO TJVY 2609N"
+   },
+   "docClosing": "TBA",
+   "cntrClosing": "TBA",
+   "openStack": "TBA"
+  },
+  {
+   "vessel": "HEUNG-A BANGKOK",
+   "voyage": "2612N",
+   "service": "PCI2",
+   "pod": "IDSRG → THLCH → CNSHA → KRPUS → KRKAN",
+   "oldEtd": null,
+   "etd": "2026-10-22 10:00",
+   "oldEta": null,
+   "eta": "2026-10-23",
+   "status": "ON TIME",
+   "reason": "",
+   "source": {
+    "from": "ebiz.heungaline.com/Schedule (GetScheduleJsonData, POL IDJKT)",
+    "date": "2026-10-12",
+    "subject": "Jadwal Outbound Jakarta"
+   },
+   "docClosing": "TBA",
+   "cntrClosing": "TBA",
+   "openStack": "TBA"
+  },
+  {
+   "vessel": "YEOSU VOYAGER",
+   "voyage": "2608N",
+   "service": "ANX",
+   "pod": "VNSGN → CNSHK → KRINC → KRPUS → KRUSN → CNSHA → THLCH",
+   "oldEtd": null,
+   "etd": "2026-10-27 02:30",
+   "oldEta": null,
+   "eta": "2026-10-29",
+   "status": "DELAY",
+   "reason": "Berth congestion di IDJKT (est. 1-2 hari); port call HKHKG di-skip (alasan tidak dijelaskan operator)",
+   "source": {
+    "from": "sendonly04@sinokor.co.kr (Sinokor Line Operation Team)",
+    "date": "2026-10-12 11:17",
+    "subject": "[ANX] M/V YEOSU VOYAGER 2608/2609 COASTAL SCHEDULE(10/12)"
+   },
+   "docClosing": "TBA",
+   "cntrClosing": "TBA",
+   "openStack": "TBA"
+  },
+  {
+   "vessel": "KMTC HOCHIMINH",
+   "voyage": "2610N",
+   "service": "KI1",
+   "pod": "IDSUB → HKHKG → KRKAN → KRUSN → KRPUS → SGSIN",
+   "oldEtd": null,
+   "etd": "2026-10-28 10:30",
+   "oldEta": null,
+   "eta": "2026-10-29",
+   "status": "ON TIME",
+   "reason": "",
+   "source": {
+    "from": "ebiz.heungaline.com/Schedule (GetScheduleJsonData, POL IDJKT)",
+    "date": "2026-10-12",
+    "subject": "Jadwal Outbound Jakarta"
+   },
+   "docClosing": "TBA",
+   "cntrClosing": "TBA",
+   "openStack": "TBA"
+  },
+  {
+   "vessel": "KWANGYANG VOYAGER",
+   "voyage": "2609N",
+   "service": "PCI",
+   "pod": "IDSUB → VNSGN → CNSHA → KRKAN → KRPUS",
+   "oldEtd": "2026-10-28 06:00",
+   "etd": "2026-10-28 12:00",
+   "oldEta": "2026-10-29",
+   "eta": "2026-10-29",
+   "status": "DELAY",
+   "reason": "alasan belum ditemukan (email operator tidak dapat dibaca pada run otomatis)",
+   "source": {
+    "from": "ebiz.heungaline.com/Schedule (GetScheduleJsonData, POL IDJKT)",
+    "date": "2026-10-13",
+    "subject": "Jadwal Outbound Jakarta"
+   },
+   "docClosing": "TBA",
+   "cntrClosing": "TBA",
+   "openStack": "TBA"
+  },
+  {
+   "vessel": "INCHEON VOYAGER",
+   "voyage": "2608N",
+   "service": "PCI",
+   "pod": "IDSUB → CNSHA → KRPUS → KRKAN",
+   "oldEtd": null,
+   "etd": "2026-10-29 17:00",
+   "oldEta": null,
+   "eta": "2026-10-30",
+   "status": "ON TIME",
+   "reason": "",
+   "source": {
+    "from": "ebiz.heungaline.com/Schedule (GetScheduleJsonData, POL IDJKT)",
+    "date": "2026-10-12",
+    "subject": "Jadwal Outbound Jakarta"
+   },
+   "docClosing": "TBA",
+   "cntrClosing": "TBA",
+   "openStack": "TBA"
+  },
+  {
+   "vessel": "STARSHIP JUPITER",
+   "voyage": "2608N",
+   "service": "ANX",
+   "pod": "VNSGN → HKHKG → CNSHK → KRINC → KRPUS → KRUSN → CNSHA → THLCH",
+   "oldEtd": "2026-10-29 10:30",
+   "etd": "2026-10-30 02:30",
+   "oldEta": "2026-10-31",
+   "eta": "2026-11-01",
+   "status": "DELAY",
+   "reason": "alasan belum ditemukan (email operator tidak dapat dibaca pada run otomatis)",
+   "source": {
+    "from": "ebiz.heungaline.com/Schedule (GetScheduleJsonData, POL IDJKT)",
+    "date": "2026-10-13",
+    "subject": "Jadwal Outbound Jakarta"
+   },
+   "docClosing": "TBA",
+   "cntrClosing": "TBA",
+   "openStack": "TBA"
+  },
+  {
+   "vessel": "HAPPY LUCKY",
+   "voyage": "2641N",
+   "service": "PCI",
+   "pod": "IDSUB → VNSGN → CNSHA → KRPUS → KRKAN",
+   "oldEtd": "2026-10-31 04:00",
+   "etd": "2026-10-31 12:00",
+   "oldEta": "2026-11-01",
+   "eta": "2026-11-01",
+   "status": "DELAY",
+   "reason": "alasan belum ditemukan (email operator tidak dapat dibaca pada run otomatis)",
+   "source": {
+    "from": "ebiz.heungaline.com/Schedule (GetScheduleJsonData, POL IDJKT)",
+    "date": "2026-10-13",
+    "subject": "Jadwal Outbound Jakarta"
+   },
+   "docClosing": "TBA",
+   "cntrClosing": "TBA",
+   "openStack": "TBA"
+  },
+  {
+   "vessel": "BELAWAN",
+   "voyage": "2610N",
+   "service": "KI1",
+   "pod": "IDSUB → HKHKG → KRKAN → KRUSN → KRPUS → SGSIN",
+   "oldEtd": null,
+   "etd": "2026-11-01 17:30",
+   "oldEta": null,
+   "eta": "2026-11-02",
+   "status": "ON TIME",
+   "reason": "",
+   "source": {
+    "from": "ebiz.heungaline.com/Schedule (GetScheduleJsonData, POL IDJKT)",
+    "date": "2026-10-12",
+    "subject": "Jadwal Outbound Jakarta"
+   },
+   "docClosing": "TBA",
+   "cntrClosing": "TBA",
+   "openStack": "TBA"
+  },
+  {
+   "vessel": "KMTC SURABAYA",
+   "voyage": "2608N",
+   "service": "ANX",
+   "pod": "VNSGN → HKHKG → CNSHK → KRINC → KRPUS → KRUSN → CNSHA → THLCH",
+   "oldEtd": null,
+   "etd": "2026-11-04 11:30",
+   "oldEta": null,
+   "eta": "2026-11-07",
+   "status": "ON TIME",
+   "reason": "",
+   "source": {
+    "from": "ebiz.heungaline.com/Schedule (GetScheduleJsonData, POL IDJKT)",
+    "date": "2026-10-12",
+    "subject": "Jadwal Outbound Jakarta"
+   },
+   "docClosing": "TBA",
+   "cntrClosing": "TBA",
+   "openStack": "TBA"
+  },
+  {
+   "vessel": "SAWASDEE RIGEL",
+   "voyage": "2610N",
+   "service": "PCI2",
+   "pod": "IDSRG → THLCH → CNSHA → KRPUS → KRKAN",
+   "oldEtd": null,
+   "etd": "2026-11-05 01:30",
+   "oldEta": null,
+   "eta": "2026-11-06",
+   "status": "SKIP",
+   "reason": "Voyage hilang dari jadwal ebiz; alasan belum ditemukan (email operator tidak dapat dibaca pada run otomatis)",
+   "source": {
+    "from": "ebiz.heungaline.com/Schedule (GetScheduleJsonData, POL IDJKT)",
+    "date": "2026-10-12",
+    "subject": "Jadwal Outbound Jakarta"
+   },
+   "docClosing": "TBA",
+   "cntrClosing": "TBA",
+   "openStack": "TBA"
+  },
+  {
+   "vessel": "SAWASDEE SUNRISE",
+   "voyage": "2612N",
+   "service": "PCI2",
+   "pod": "IDSRG → THLCH → CNSHA → KRPUS → KRKAN",
+   "oldEtd": "2026-10-31 23:00",
+   "etd": "2026-11-05 21:00",
+   "oldEta": "2026-11-02",
+   "eta": "2026-11-07",
+   "status": "DELAY",
+   "reason": "alasan belum ditemukan (email operator tidak dapat dibaca pada run otomatis)",
+   "source": {
+    "from": "ebiz.heungaline.com/Schedule (GetScheduleJsonData, POL IDJKT)",
+    "date": "2026-10-12",
+    "subject": "Jadwal Outbound Jakarta"
+   },
+   "docClosing": "TBA",
+   "cntrClosing": "TBA",
+   "openStack": "TBA"
+  },
+  {
+   "vessel": "SHANGHAI VOYAGER",
+   "voyage": "2609N",
+   "service": "PCI",
+   "pod": "IDSUB → VNSGN → CNSHA → KRPUS → KRKAN",
+   "oldEtd": null,
+   "etd": "2026-11-08 06:00",
+   "oldEta": null,
+   "eta": "2026-11-09",
+   "status": "ON TIME",
+   "reason": "",
+   "source": {
+    "from": "ebiz.heungaline.com/Schedule (GetScheduleJsonData, POL IDJKT)",
+    "date": "2026-10-12",
+    "subject": "Jadwal Outbound Jakarta"
+   },
+   "docClosing": "TBA",
+   "cntrClosing": "TBA",
+   "openStack": "TBA"
+  },
+  {
+   "vessel": "SAWASDEE SHANGHAI",
+   "voyage": "2640N",
+   "service": "PCI2",
+   "pod": "IDSRG → THLCH → CNSHA → KRPUS → KRKAN",
+   "oldEtd": null,
+   "etd": "2026-11-08 23:00",
+   "oldEta": null,
+   "eta": "2026-11-10",
+   "status": "ON TIME",
+   "reason": "",
+   "source": {
+    "from": "ebiz.heungaline.com/Schedule (GetScheduleJsonData, POL IDJKT)",
+    "date": "2026-10-12",
+    "subject": "Jadwal Outbound Jakarta"
+   },
+   "docClosing": "TBA",
+   "cntrClosing": "TBA",
+   "openStack": "TBA"
+  },
+  {
+   "vessel": "KMTC SHIMIZU",
+   "voyage": "2610N",
+   "service": "KI1",
+   "pod": "IDSUB → HKHKG → KRKAN → KRUSN → KRPUS → SGSIN",
+   "oldEtd": null,
+   "etd": "2026-11-11 17:00",
+   "oldEta": null,
+   "eta": "2026-11-13",
+   "status": "ON TIME",
+   "reason": "",
+   "source": {
+    "from": "ebiz.heungaline.com/Schedule (GetScheduleJsonData, POL IDJKT)",
+    "date": "2026-10-12",
+    "subject": "Jadwal Outbound Jakarta"
+   },
+   "docClosing": "TBA",
+   "cntrClosing": "TBA",
+   "openStack": "TBA"
+  },
+  {
+   "vessel": "HOCHIMINH VOYAGER",
+   "voyage": "2610N",
+   "service": "PCI2",
+   "pod": "IDSRG → THLCH → CNSHA → KRPUS → KRKAN",
+   "oldEtd": "2026-11-11 18:30",
+   "etd": "2026-11-13 20:00",
+   "oldEta": "2026-11-12",
+   "eta": "2026-11-15",
+   "status": "DELAY",
+   "reason": "alasan belum ditemukan (email operator tidak dapat dibaca pada run otomatis)",
+   "source": {
+    "from": "ebiz.heungaline.com/Schedule (GetScheduleJsonData, POL IDJKT)",
+    "date": "2026-10-12",
+    "subject": "Jadwal Outbound Jakarta"
+   },
+   "docClosing": "TBA",
+   "cntrClosing": "TBA",
+   "openStack": "TBA"
+  },
+  {
+   "vessel": "KMTC XIAMEN",
+   "voyage": "2609N",
+   "service": "ANX",
+   "pod": "VNSGN → HKHKG → CNSHK → KRINC → KRPUS → KRUSN → CNSHA → THLCH",
+   "oldEtd": null,
+   "etd": "2026-11-14 00:00",
+   "oldEta": null,
+   "eta": "2026-11-16",
+   "status": "ON TIME",
+   "reason": "",
+   "source": {
+    "from": "ebiz.heungaline.com/Schedule (GetScheduleJsonData, POL IDJKT)",
+    "date": "2026-10-12",
+    "subject": "Jadwal Outbound Jakarta"
+   },
+   "docClosing": "TBA",
+   "cntrClosing": "TBA",
+   "openStack": "TBA"
+  },
+  {
+   "vessel": "TIANJIN VOYAGER",
+   "voyage": "2610N",
+   "service": "KI1",
+   "pod": "IDSUB → HKHKG → KRKAN → KRUSN → KRPUS → SGSIN",
+   "oldEtd": null,
+   "etd": "2026-11-16 19:00",
+   "oldEta": null,
+   "eta": "2026-11-18",
+   "status": "ON TIME",
+   "reason": "",
+   "source": {
+    "from": "ebiz.heungaline.com/Schedule (GetScheduleJsonData, POL IDJKT)",
+    "date": "2026-10-12",
+    "subject": "Jadwal Outbound Jakarta"
+   },
+   "docClosing": "TBA",
+   "cntrClosing": "TBA",
+   "openStack": "TBA"
+  },
+  {
+   "vessel": "HEUNG-A BANGKOK",
+   "voyage": "2613N",
+   "service": "PCI2",
+   "pod": "IDSRG → THLCH → CNSHA → KRPUS → KRKAN",
+   "oldEtd": null,
+   "etd": "2026-11-18 09:30",
+   "oldEta": null,
+   "eta": "2026-11-19",
+   "status": "ON TIME",
+   "reason": "",
+   "source": {
+    "from": "ebiz.heungaline.com/Schedule (GetScheduleJsonData, POL IDJKT)",
+    "date": "2026-10-12",
+    "subject": "Jadwal Outbound Jakarta"
+   },
+   "docClosing": "TBA",
+   "cntrClosing": "TBA",
+   "openStack": "TBA"
+  },
+  {
+   "vessel": "CHENNAI VOYAGER",
+   "voyage": "2610N",
+   "service": "PCI",
+   "pod": "IDSUB → VNSGN → CNSHA → KRPUS → KRKAN",
+   "oldEtd": null,
+   "etd": "2026-11-21 22:00",
+   "oldEta": null,
+   "eta": "2026-11-23",
+   "status": "ON TIME",
+   "reason": "",
+   "source": {
+    "from": "ebiz.heungaline.com/Schedule (GetScheduleJsonData, POL IDJKT)",
+    "date": "2026-10-12",
+    "subject": "Jadwal Outbound Jakarta"
+   },
+   "docClosing": "TBA",
+   "cntrClosing": "TBA",
+   "openStack": "TBA"
+  },
+  {
+   "vessel": "KMTC HOCHIMINH",
+   "voyage": "2611N",
+   "service": "KI1",
+   "pod": "IDSUB → HKHKG → KRKAN → KRUSN → KRPUS → SGSIN",
+   "oldEtd": null,
+   "etd": "2026-11-22 17:00",
+   "oldEta": null,
+   "eta": "2026-11-24",
+   "status": "ON TIME",
+   "reason": "",
+   "source": {
+    "from": "ebiz.heungaline.com/Schedule (GetScheduleJsonData, POL IDJKT)",
+    "date": "2026-10-12",
+    "subject": "Jadwal Outbound Jakarta"
+   },
+   "docClosing": "TBA",
+   "cntrClosing": "TBA",
+   "openStack": "TBA"
+  },
+  {
+   "vessel": "YEOSU VOYAGER",
+   "voyage": "2609N",
+   "service": "ANX",
+   "pod": "VNSGN → HKHKG → CNSHK → KRINC → KRPUS → KRUSN → CNSHA → THLCH",
+   "oldEtd": null,
+   "etd": "2026-11-22 23:00",
+   "oldEta": null,
+   "eta": "2026-11-25",
+   "status": "DELAY",
+   "reason": "Berth congestion di IDJKT (est. 1 hari)",
+   "source": {
+    "from": "sendonly04@sinokor.co.kr (Sinokor Line Operation Team)",
+    "date": "2026-10-12 11:17",
+    "subject": "[ANX] M/V YEOSU VOYAGER 2608/2609 COASTAL SCHEDULE(10/12)"
+   },
+   "docClosing": "TBA",
+   "cntrClosing": "TBA",
+   "openStack": "TBA"
+  },
+  {
+   "vessel": "INCHEON VOYAGER",
+   "voyage": "2609N",
+   "service": "PCI",
+   "pod": "IDSUB → VNSGN → CNSHA → KRPUS → KRKAN",
+   "oldEtd": null,
+   "etd": "2026-11-23 22:00",
+   "oldEta": null,
+   "eta": "2026-11-25",
+   "status": "ON TIME",
+   "reason": "",
+   "source": {
+    "from": "ebiz.heungaline.com/Schedule (GetScheduleJsonData, POL IDJKT)",
+    "date": "2026-10-12",
+    "subject": "Jadwal Outbound Jakarta"
+   },
+   "docClosing": "TBA",
+   "cntrClosing": "TBA",
+   "openStack": "TBA"
+  },
+  {
+   "vessel": "BELAWAN",
+   "voyage": "2611N",
+   "service": "KI1",
+   "pod": "IDSUB → HKHKG → KRKAN → KRUSN → KRPUS → SGSIN",
+   "oldEtd": null,
+   "etd": "2026-11-26 20:00",
+   "oldEta": null,
+   "eta": "2026-11-28",
+   "status": "ON TIME",
+   "reason": "",
+   "source": {
+    "from": "ebiz.heungaline.com/Schedule (GetScheduleJsonData, POL IDJKT)",
+    "date": "2026-10-12",
+    "subject": "Jadwal Outbound Jakarta"
+   },
+   "docClosing": "TBA",
+   "cntrClosing": "TBA",
+   "openStack": "TBA"
+  },
+  {
+   "vessel": "STARSHIP JUPITER",
+   "voyage": "2609N",
+   "service": "ANX",
+   "pod": "VNSGN → HKHKG → CNSHK → KRINC → KRPUS → KRUSN → CNSHA → THLCH",
+   "oldEtd": "2026-11-26 04:30",
+   "etd": "2026-11-27 02:30",
+   "oldEta": "2026-11-28",
+   "eta": "2026-11-29",
+   "status": "DELAY",
+   "reason": "alasan belum ditemukan (email operator tidak dapat dibaca pada run otomatis)",
+   "source": {
+    "from": "ebiz.heungaline.com/Schedule (GetScheduleJsonData, POL IDJKT)",
+    "date": "2026-10-13",
+    "subject": "Jadwal Outbound Jakarta"
+   },
+   "docClosing": "TBA",
+   "cntrClosing": "TBA",
+   "openStack": "TBA"
+  },
+  {
+   "vessel": "HAPPY LUCKY",
+   "voyage": "2645N",
+   "service": "PCI",
+   "pod": "IDSUB → VNSGN → CNSHA → KRPUS → KRKAN",
+   "oldEtd": "2026-11-27 11:00",
+   "etd": "2026-11-27 16:00",
+   "oldEta": "2026-11-28",
+   "eta": "2026-11-28",
+   "status": "DELAY",
+   "reason": "alasan belum ditemukan (email operator tidak dapat dibaca pada run otomatis)",
+   "source": {
+    "from": "ebiz.heungaline.com/Schedule (GetScheduleJsonData, POL IDJKT)",
+    "date": "2026-10-13",
+    "subject": "Jadwal Outbound Jakarta"
+   },
+   "docClosing": "TBA",
+   "cntrClosing": "TBA",
+   "openStack": "TBA"
+  },
+  {
+   "vessel": "KMTC SURABAYA",
+   "voyage": "2609N",
+   "service": "ANX",
+   "pod": "VNSGN → HKHKG → CNSHK → KRINC → KRPUS → KRUSN → CNSHA → THLCH",
+   "oldEtd": null,
+   "etd": "2026-12-02 16:30",
+   "oldEta": null,
+   "eta": "2026-12-05",
+   "status": "ON TIME",
+   "reason": "",
+   "source": {
+    "from": "ebiz.heungaline.com/Schedule (GetScheduleJsonData, POL IDJKT)",
+    "date": "2026-10-12",
+    "subject": "Jadwal Outbound Jakarta"
+   },
+   "docClosing": "TBA",
+   "cntrClosing": "TBA",
+   "openStack": "TBA"
+  },
+  {
+   "vessel": "SAWASDEE SUNRISE",
+   "voyage": "2613N",
+   "service": "PCI2",
+   "pod": "IDSRG → THLCH → CNSHA → KRPUS → KRKAN",
+   "oldEtd": "2026-11-28 23:00",
+   "etd": "2026-12-03 21:00",
+   "oldEta": "2026-11-30",
+   "eta": "2026-12-05",
+   "status": "DELAY",
+   "reason": "alasan belum ditemukan (email operator tidak dapat dibaca pada run otomatis)",
+   "source": {
+    "from": "ebiz.heungaline.com/Schedule (GetScheduleJsonData, POL IDJKT)",
+    "date": "2026-10-12",
+    "subject": "Jadwal Outbound Jakarta"
+   },
+   "docClosing": "TBA",
+   "cntrClosing": "TBA",
+   "openStack": "TBA"
+  },
+  {
+   "vessel": "KMTC SHIMIZU",
+   "voyage": "2611N",
+   "service": "KI1",
+   "pod": "IDSUB → HKHKG → KRKAN → KRUSN → KRPUS → SGSIN",
+   "oldEtd": null,
+   "etd": "2026-12-06 19:30",
+   "oldEta": null,
+   "eta": "2026-12-08",
+   "status": "ON TIME",
+   "reason": "",
+   "source": {
+    "from": "ebiz.heungaline.com/Schedule (GetScheduleJsonData, POL IDJKT)",
+    "date": "2026-10-12",
+    "subject": "Jadwal Outbound Jakarta"
+   },
+   "docClosing": "TBA",
+   "cntrClosing": "TBA",
+   "openStack": "TBA"
+  },
+  {
+   "vessel": "SAWASDEE SHANGHAI",
+   "voyage": "2641N",
+   "service": "PCI2",
+   "pod": "IDSRG → THLCH → CNSHA → KRPUS → KRKAN",
+   "oldEtd": null,
+   "etd": "2026-12-06 23:00",
+   "oldEta": null,
+   "eta": "2026-12-08",
+   "status": "ON TIME",
+   "reason": "",
+   "source": {
+    "from": "ebiz.heungaline.com/Schedule (GetScheduleJsonData, POL IDJKT)",
+    "date": "2026-10-12",
+    "subject": "Jadwal Outbound Jakarta"
+   },
+   "docClosing": "TBA",
+   "cntrClosing": "TBA",
+   "openStack": "TBA"
+  },
+  {
+   "vessel": "SHANGHAI VOYAGER",
+   "voyage": "2610N",
+   "service": "PCI",
+   "pod": "IDSUB → VNSGN → CNSHA",
+   "oldEtd": null,
+   "etd": "2026-12-07 18:00",
+   "oldEta": null,
+   "eta": "2026-12-08",
+   "status": "ON TIME",
+   "reason": "",
+   "source": {
+    "from": "ebiz.heungaline.com/Schedule (GetScheduleJsonData, POL IDJKT)",
+    "date": "2026-10-12",
+    "subject": "Jadwal Outbound Jakarta"
+   },
+   "docClosing": "TBA",
+   "cntrClosing": "TBA",
+   "openStack": "TBA"
+  },
+  {
+   "vessel": "HOCHIMINH VOYAGER",
+   "voyage": "2611N",
+   "service": "PCI2",
+   "pod": "IDSRG → THLCH → CNSHA",
+   "oldEtd": null,
+   "etd": "2026-12-11 20:00",
+   "oldEta": null,
+   "eta": "2026-12-13",
+   "status": "ON TIME",
+   "reason": "",
+   "source": {
+    "from": "ebiz.heungaline.com/Schedule (GetScheduleJsonData, POL IDJKT)",
+    "date": "2026-10-12",
+    "subject": "Jadwal Outbound Jakarta"
+   },
+   "docClosing": "TBA",
+   "cntrClosing": "TBA",
+   "openStack": "TBA"
+  },
+  {
+   "vessel": "KMTC XIAMEN",
+   "voyage": "2610N",
+   "service": "ANX",
+   "pod": "VNSGN → HKHKG → CNSHK",
+   "oldEtd": null,
+   "etd": "2026-12-12 00:00",
+   "oldEta": null,
+   "eta": "2026-12-14",
+   "status": "ON TIME",
+   "reason": "",
+   "source": {
+    "from": "ebiz.heungaline.com/Schedule (GetScheduleJsonData, POL IDJKT)",
+    "date": "2026-10-13",
+    "subject": "Jadwal Outbound Jakarta"
+   },
+   "docClosing": "TBA",
+   "cntrClosing": "TBA",
+   "openStack": "TBA"
+  }
+ ],
+ "shippers": [
+  {
+   "shipper": "PT Contoh Satu (CONTOH)",
+   "email": "a@contoh.example",
+   "booking": "HAL0001",
+   "vessel": "YEOSU VOYAGER",
+   "voyage": "2608N",
+   "noticeStatus": "belum"
+  },
+  {
+   "shipper": "PT Contoh Dua (CONTOH)",
+   "email": "b@contoh.example",
+   "booking": "HAL0002",
+   "vessel": "YEOSU VOYAGER",
+   "voyage": "2608N",
+   "noticeStatus": "draft dibuat"
+  }
+ ],
+ "history": [
+  {
+   "at": "2026-10-13 09:00",
+   "text": "KWANGYANG VOYAGER 2609N: DELAY ETD 2026-10-28 06:00 → 2026-10-28 12:00, ETA 2026-10-29 → 2026-10-29; alasan belum ditemukan"
+  },
+  {
+   "at": "2026-10-13 09:00",
+   "text": "STARSHIP JUPITER 2608N: DELAY ETD 2026-10-29 10:30 → 2026-10-30 02:30, ETA 2026-10-31 → 2026-11-01; alasan belum ditemukan"
+  },
+  {
+   "at": "2026-10-13 09:00",
+   "text": "HAPPY LUCKY 2641N: DELAY ETD 2026-10-31 04:00 → 2026-10-31 12:00, ETA 2026-11-01 → 2026-11-01; alasan belum ditemukan"
+  },
+  {
+   "at": "2026-10-13 09:00",
+   "text": "STARSHIP JUPITER 2609N: DELAY ETD 2026-11-26 04:30 → 2026-11-27 02:30, ETA 2026-11-28 → 2026-11-29; alasan belum ditemukan"
+  },
+  {
+   "at": "2026-10-13 09:00",
+   "text": "HAPPY LUCKY 2645N: DELAY ETD 2026-11-27 11:00 → 2026-11-27 16:00, ETA 2026-11-28 → 2026-11-28; alasan belum ditemukan"
+  },
+  {
+   "at": "2026-10-13 09:00",
+   "text": "KMTC XIAMEN 2610N: voyage baru di ebiz (ETD 2026-12-12 00:00)"
+  },
+  {
+   "at": "2026-10-12 16:00",
+   "text": "HOCHIMINH VOYAGER 2609N: DELAY ETD 2026-10-16 08:30 → 2026-10-18 10:00; alasan belum ditemukan"
+  },
+  {
+   "at": "2026-10-12 16:00",
+   "text": "SAWASDEE SUNRISE 2612N: DELAY ETD 2026-10-31 23:00 → 2026-11-05 21:00; alasan belum ditemukan"
+  },
+  {
+   "at": "2026-10-12 16:00",
+   "text": "SAWASDEE SHANGHAI 2640N: voyage baru di ebiz (ETD 2026-11-08 23:00)"
+  },
+  {
+   "at": "2026-10-12 16:00",
+   "text": "HOCHIMINH VOYAGER 2610N: DELAY ETD 2026-11-11 18:30 → 2026-11-13 20:00; alasan belum ditemukan"
+  },
+  {
+   "at": "2026-10-12 16:00",
+   "text": "KMTC SURABAYA 2609N: voyage baru di ebiz (ETD 2026-12-02 16:30)"
+  },
+  {
+   "at": "2026-10-12 16:00",
+   "text": "SAWASDEE SUNRISE 2613N: DELAY ETD 2026-11-28 23:00 → 2026-12-03 21:00; alasan belum ditemukan"
+  },
+  {
+   "at": "2026-10-12 16:00",
+   "text": "KMTC SHIMIZU 2611N: voyage baru di ebiz (ETD 2026-12-06 19:30)"
+  },
+  {
+   "at": "2026-10-12 16:00",
+   "text": "SAWASDEE SHANGHAI 2641N: voyage baru di ebiz (ETD 2026-12-06 23:00)"
+  },
+  {
+   "at": "2026-10-12 16:00",
+   "text": "SHANGHAI VOYAGER 2610N: voyage baru di ebiz (ETD 2026-12-07 18:00)"
+  },
+  {
+   "at": "2026-10-12 16:00",
+   "text": "HOCHIMINH VOYAGER 2611N: voyage baru di ebiz (ETD 2026-12-11 20:00)"
+  },
+  {
+   "at": "2026-10-12 16:00",
+   "text": "SAWASDEE RIGEL 2610N: SKIP (hilang dari ebiz, sebelumnya ETD 2026-11-05 01:30); alasan belum ditemukan"
+  },
+  {
+   "at": "2026-10-12",
+   "text": "Open/closing diisi: KMTC XIAMEN 2608N, HOCHIMINH VOYAGER 2609N, KMTC SHIMIZU 2609N"
+  },
+  {
+   "at": "2026-10-12 11:17",
+   "text": "YEOSU VOYAGER 2608N: berth congestion IDJKT 1-2 hari (ETD 27 Okt); HKHKG di-skip (email Sinokor)"
+  },
+  {
+   "at": "2026-10-12 11:17",
+   "text": "YEOSU VOYAGER 2609N: berth congestion IDJKT 1 hari (ETD 22 Nov) (email Sinokor)"
+  },
+  {
+   "at": "2026-10-12",
+   "text": "KMTC XIAMEN 2608N ditandai DELAY di ebiz (ETD 16 Okt 14:00); alasan belum ditemukan"
+  },
+  {
+   "at": "2026-10-12",
+   "text": "Data jadwal Jakarta diambil dari ebiz (30 voyage s/d 28 Nov); closing semua TBA"
+  }
+ ]
+};
+
+</script>
 <script>
 let D=window.DASHBOARD_DATA;const $=id=>document.getElementById(id);
 const cls={"DELAY":"DELAY","SKIP":"SKIP","VESSEL CHANGE":"VC","ON TIME":"ONTIME"};
@@ -157,7 +1016,7 @@ function cards(){
  const c=s=>D.voyages.filter(v=>v.status===s).length;
  const items=[["&#9973;","Semua",D.voyages.length,"","",""],["&#9201;","Delay",c("DELAY"),"d","DELAY"],["&#9940;","Skip",c("SKIP"),"s","SKIP"],["&#8644;","Vessel change",c("VESSEL CHANGE"),"v","VESSEL CHANGE"],["&#10003;","On time",c("ON TIME"),"o","ON TIME"],["&#9888;","Closing &lt; 48 jam",D.voyages.filter(closingSoon).length,"c","__closing"]];
  $("cards").innerHTML=items.map(([i,l,n,k,s],ix)=>`<button class="card ${k} ${(s==="__closing"?state.closing:state.status===s&&!state.closing)?"active":""}" data-s="${s||""}" style="animation-delay:${ix*60}ms"><span class="ic">${i}</span><span><span class="mute">${l}</span><b data-n="${n}">${first?0:n}</b></span></button>`).join("");
- $("cards").querySelectorAll(".card").forEach(b=>b.onclick=()=>{const s=b.dataset.s;state.closing=s==="__closing"?!state.closing:false;state.status=s==="__closing"?"":s;$("fstatus").value=state.status;render()});
+ $("cards").querySelectorAll(".card").forEach(b=>b.onclick=()=>{const s=b.dataset.s;state.closing=s==="__closing"?!state.closing:false;state.status=s==="__closing"?"":s;if(state.closing){state.service="";state.day=""}$("fstatus").value=state.status;render()});
  if(first)$("cards").querySelectorAll("b").forEach(b=>countUp(b,+b.dataset.n));
 }
 
@@ -172,7 +1031,7 @@ function calendar(){
   h+=`<div class="day ${l.length?"has c-"+cc[worst]:""} ${i===0?"today":""} ${state.day===k?"sel":""}" data-k="${k}" title="${l.map(v=>v.vessel+" "+v.voyage+" ("+v.status+")").join("\n")}"><small>${dt.toLocaleDateString("id-ID",{weekday:"short"})}</small><b>${dt.getDate()}</b><small>${dt.toLocaleDateString("id-ID",{month:"short"})}</small>${l.length?`<span class="n">${l.length}</span>`:""}</div>`;
  }
  $("cal").innerHTML=h;
- $("cal").querySelectorAll(".day.has").forEach(e=>e.onclick=()=>{state.day=state.day===e.dataset.k?"":e.dataset.k;render()});
+ $("cal").querySelectorAll(".day.has").forEach(e=>e.onclick=()=>{state.day=state.day===e.dataset.k?"":e.dataset.k;if(state.day){state.service="";state.status="";state.closing=false;state.expanded.clear()}render()});
 }
 
 function tabs(){
@@ -312,6 +1171,5 @@ function render(){
 render();tick();
 setInterval(oc,60000);
 </script>
-
-
-</body></html>
+</body>
+</html>
