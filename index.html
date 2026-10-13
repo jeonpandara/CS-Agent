@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<!-- saved from url=(0073)file:///C:/Users/skrhal/Desktop/TRAINING%20AI/vessel-dashboard/index.html -->
+<html lang="id"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vessel Monitor</title>
+<style>
+:root{--bg:#eef4f9;--card:#fff;--text:#0b2239;--mute:#5d7287;--line:#d9e3ec;--navy:#0a2a4a;--navy2:#123f6b;--sea:#1b7fb8;--ok:#14935a;--delay:#e08a00;--skip:#c62828;--chg:#6a3fc4;--hover:rgba(27,127,184,.08);--shadow:0 2px 10px rgba(10,42,74,.08)}
+:root[data-theme="dark"]{--bg:#07131f;--card:#0e2236;--text:#e4eef8;--mute:#8fa8c0;--line:#1c3752;--navy:#04101c;--navy2:#7ec3ee;--hover:rgba(126,195,238,.1);--shadow:0 2px 10px rgba(0,0,0,.35)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 system-ui,Segoe UI,sans-serif}
+header{background:linear-gradient(120deg,#fff 0%,#e3f2fb 55%,#b9dcf3 100%);color:var(--navy);padding:14px 20px 0;box-shadow:var(--shadow)}
+:root[data-theme="dark"] header{background:linear-gradient(120deg,#04101c,#0b2a47)}
+:root[data-theme="dark"] header{color:#fff}
+.top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.brand{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.logo{height:42px;display:block}
+:root[data-theme="dark"] .logo{background:#fff;border-radius:10px;padding:5px 10px;height:50px}
+.titles h1{margin:0;font-size:19px;letter-spacing:.4px}
+.sub{margin:2px 0 0;font-size:11px;color:var(--mute);letter-spacing:2px;text-transform:uppercase}
+.mute{color:var(--mute);font-size:12px}
+.tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.clock{font-variant-numeric:tabular-nums;font-weight:600;font-size:15px}
+.pulse{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--ok);margin-right:6px;animation:pulse 2s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(20,147,90,.6)}70%{box-shadow:0 0 0 8px rgba(20,147,90,0)}100%{box-shadow:0 0 0 0 rgba(20,147,90,0)}}
+.waves{display:block;width:100%;height:30px;margin-top:6px}
+.wave1{animation:drift 12s linear infinite alternate}
+@keyframes drift{from{transform:translateX(0)}to{transform:translateX(-40px)}}
+button,select,input{font:inherit;color:inherit}
+button{cursor:pointer;border:1px solid var(--line);background:var(--card);border-radius:8px;padding:6px 11px;transition:background .15s,transform .1s}
+button:hover{background:var(--hover)}button:active{transform:scale(.97)}
+header button{background:rgba(255,255,255,.7);border-color:rgba(10,42,74,.2)}
+:root[data-theme="dark"] header button{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.3);color:#fff}
+main{padding:18px 20px 30px;display:grid;gap:16px;max-width:1500px;margin:0 auto}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.card,.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;box-shadow:var(--shadow)}
+.card{border-left:5px solid var(--sea);cursor:pointer;text-align:left;transition:transform .15s,box-shadow .15s;animation:rise .5s both;display:flex;gap:10px;align-items:center}
+.card:hover{transform:translateY(-3px);box-shadow:0 8px 18px rgba(10,42,74,.15)}.card.active{outline:2px solid var(--sea)}
+.card.d{border-left-color:var(--delay)}.card.s{border-left-color:var(--skip)}.card.v{border-left-color:var(--chg)}.card.o{border-left-color:var(--ok)}.card.c{border-left-color:#d6336c}
+.card .ic{font-size:26px}.card b{display:block;font-size:28px;line-height:1.1}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.panel{animation:rise .5s both}
+.panel h2{margin:0 0 10px;font-size:15px;color:var(--navy2);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.bar{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.bar input,.bar select{padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card)}
+.bar input{flex:1;min-width:180px}.kbd{font-size:11px;border:1px solid var(--line);border-radius:4px;padding:0 5px;color:var(--mute)}
+.scroll{overflow:auto;max-height:560px}table{width:100%;border-collapse:collapse;min-width:720px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:11px;color:var(--mute);text-transform:uppercase;letter-spacing:.5px;background:var(--card);user-select:none;position:sticky;top:0;z-index:2;box-shadow:0 1px 0 var(--line)}
+th.sort{cursor:pointer}th.sort:hover{color:var(--sea)}
+tr.row{cursor:pointer;transition:background .12s}tr.row:hover td{background:var(--hover)}
+tr.detail td{background:var(--hover);font-size:13px;animation:rise .25s both}
+.badge{display:inline-block;padding:2px 9px;border-radius:10px;font-size:11px;font-weight:600;color:#fff;white-space:nowrap}
+.DELAY{background:var(--delay)}.SKIP{background:var(--skip)}.VC{background:var(--chg)}.ONTIME{background:var(--ok)}
+s{color:var(--mute)}.up{color:var(--skip);font-weight:600;font-size:12px}.down{color:var(--ok);font-weight:600;font-size:12px}
+.prog{height:5px;background:var(--line);border-radius:3px;margin-top:4px;overflow:hidden;min-width:70px}.prog i{display:block;height:100%;background:linear-gradient(90deg,var(--sea),#5bc0eb);border-radius:3px}
+.prog.hot i{background:linear-gradient(90deg,var(--delay),var(--skip))}
+ul.tl{list-style:none;margin:0;padding:0 0 0 18px;border-left:2px solid var(--line)}
+ul.tl li{position:relative;margin:0 0 12px;padding-left:12px}
+ul.tl li:before{content:attr(data-i);position:absolute;left:-30px;top:-2px;width:22px;height:22px;border-radius:50%;background:var(--card);border:2px solid var(--sea);text-align:center;font-size:12px;line-height:18px}
+.cd{font-size:12px;color:var(--mute)}.cd.soon{color:var(--skip);font-weight:600}
+.cd.hot{color:var(--skip);font-weight:700;animation:blink 1.1s infinite}
+@keyframes blink{50%{opacity:.45}}
+dialog{border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--text);width:min(640px,92vw);padding:16px}
+dialog::backdrop{background:rgba(0,0,0,.45)}
+textarea{width:100%;height:260px;margin:8px 0;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--text);font:13px/1.4 Consolas,monospace}
+.empty{padding:16px;text-align:center;color:var(--mute)}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.tab{border-radius:18px;padding:5px 13px;border-width:2px}.tab.active{background:var(--sea);border-color:var(--sea);color:#fff}
+.tab small{opacity:.8;margin-left:4px}.tab .dl{background:var(--delay);color:#fff;border-radius:8px;padding:0 6px;margin-left:6px;font-size:11px}
+tr.grp td{background:rgba(27,127,184,.12);font-weight:600;color:var(--navy2)}
+tr.more td{text-align:center}
+a.link{color:var(--sea);cursor:pointer;text-decoration:underline}
+.cal{display:grid;grid-template-columns:repeat(auto-fill,minmax(54px,1fr));gap:6px}
+.day{border:1px solid var(--line);border-radius:8px;padding:5px 6px;text-align:center;cursor:default;background:var(--card);min-height:52px}
+.day small{display:block;color:var(--mute);font-size:10px}.day b{font-size:14px}
+.day.has{cursor:pointer;border-width:2px}.day.has:hover{transform:translateY(-2px)}
+.day.today{box-shadow:0 0 0 2px var(--sea)}.day.sel{background:var(--sea);color:#fff}.day.sel small{color:#fff}
+.day.has.c-DELAY{border-color:var(--delay)}.day.has.c-SKIP{border-color:var(--skip)}.day.has.c-VESSEL{border-color:var(--chg)}.day.has.c-ONTIME{border-color:var(--ok)}
+.day .n{display:inline-block;min-width:16px;border-radius:8px;font-size:10px;color:#fff;background:var(--sea);margin-top:2px}
+.chip{display:inline-block;padding:1px 8px;border-radius:8px;font-size:11px;font-weight:700;color:#fff}
+@media(max-width:640px){main{padding:12px}header{padding:10px 12px 0}.clock{font-size:13px}.logo{height:34px}}
+@media print{header button,.tools,.tabs,.bar,.cal{display:none}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<header>
+<div class="top">
+<div class="brand"><img class="logo" src="./Vessel Monitor_files/logo.png" alt="Heung-A Line" onerror="this.onerror=null;this.src='https://ebiz.heungaline.com/assets/images/logo.png'">
+<div class="titles"><h1>Vessel Monitor <span id="pol">· POL Jakarta (IDJKT)</span></h1><p class="sub">Sailing schedule · Open/Closing</p></div></div>
+<div class="tools"><div><div class="clock"><span class="pulse"></span><span id="clock">Sen, 12 Okt, 16.10.08 WIB</span></div><div class="mute" id="upd">Data diperbarui 10 menit lalu · 2026-10-12 16:00</div></div>
+<button id="refresh" title="Muat ulang data">↻ Refresh</button><button id="csv" title="Ekspor baris yang tampil">⬇ CSV</button><button id="theme" title="Ganti tema">☀/☾</button><button id="print">Cetak</button></div>
+</div>
+<svg class="waves" viewBox="0 0 1240 30" preserveAspectRatio="none"><path class="wave1" d="M-40 16 Q35 2 110 16 T260 16 T410 16 T560 16 T710 16 T860 16 T1010 16 T1160 16 T1310 16 V30 H-40Z" fill="var(--bg)" opacity=".55"></path><path d="M0 22 Q75 8 150 22 T300 22 T450 22 T600 22 T750 22 T900 22 T1050 22 T1200 22 T1350 22 V30 H0Z" fill="var(--bg)"></path></svg>
+</header>
+<main>
+<div class="cards" id="cards"><button class="card  active" data-s="" style="animation-delay:0ms"><span class="ic">⛵</span><span><span class="mute">Semua</span><b data-n="36">36</b></span></button><button class="card d " data-s="DELAY" style="animation-delay:60ms"><span class="ic">⏱</span><span><span class="mute">Delay</span><b data-n="7">7</b></span></button><button class="card s " data-s="SKIP" style="animation-delay:120ms"><span class="ic">⛔</span><span><span class="mute">Skip</span><b data-n="1">1</b></span></button><button class="card v " data-s="VESSEL CHANGE" style="animation-delay:180ms"><span class="ic">⇄</span><span><span class="mute">Vessel change</span><b data-n="0">0</b></span></button><button class="card o " data-s="ON TIME" style="animation-delay:240ms"><span class="ic">✓</span><span><span class="mute">On time</span><b data-n="28">28</b></span></button><button class="card c " data-s="__closing" style="animation-delay:300ms"><span class="ic">⚠</span><span><span class="mute">Closing &lt; 48 jam</span><b data-n="1">1</b></span></button></div>
+<section class="panel"><h2>📅 Keberangkatan 30 hari ke depan <span class="mute">(klik tanggal untuk memfilter)</span></h2><div class="cal" id="cal"><div class="day  today " data-k="2026-10-12" title=""><small>Sen</small><b>12</b><small>Okt</small></div><div class="day   " data-k="2026-10-13" title=""><small>Sel</small><b>13</b><small>Okt</small></div><div class="day   " data-k="2026-10-14" title=""><small>Rab</small><b>14</b><small>Okt</small></div><div class="day has c-ONTIME  " data-k="2026-10-15" title="KMTC SHIMIZU 2609N (ON TIME)"><small>Kam</small><b>15</b><small>Okt</small><span class="n">1</span></div><div class="day has c-DELAY  " data-k="2026-10-16" title="KMTC XIAMEN 2608N (DELAY)"><small>Jum</small><b>16</b><small>Okt</small><span class="n">1</span></div><div class="day   " data-k="2026-10-17" title=""><small>Sab</small><b>17</b><small>Okt</small></div><div class="day has c-DELAY  " data-k="2026-10-18" title="HOCHIMINH VOYAGER 2609N (DELAY)"><small>Min</small><b>18</b><small>Okt</small><span class="n">1</span></div><div class="day   " data-k="2026-10-19" title=""><small>Sen</small><b>19</b><small>Okt</small></div><div class="day   " data-k="2026-10-20" title=""><small>Sel</small><b>20</b><small>Okt</small></div><div class="day   " data-k="2026-10-21" title=""><small>Rab</small><b>21</b><small>Okt</small></div><div class="day has c-ONTIME  sel" data-k="2026-10-22" title="CHENNAI VOYAGER 2609N (ON TIME)
+TIANJIN VOYAGER 2609N (ON TIME)
+HEUNG-A BANGKOK 2612N (ON TIME)"><small>Kam</small><b>22</b><small>Okt</small><span class="n">3</span></div><div class="day   " data-k="2026-10-23" title=""><small>Jum</small><b>23</b><small>Okt</small></div><div class="day   " data-k="2026-10-24" title=""><small>Sab</small><b>24</b><small>Okt</small></div><div class="day   " data-k="2026-10-25" title=""><small>Min</small><b>25</b><small>Okt</small></div><div class="day   " data-k="2026-10-26" title=""><small>Sen</small><b>26</b><small>Okt</small></div><div class="day has c-DELAY  " data-k="2026-10-27" title="YEOSU VOYAGER 2608N (DELAY)"><small>Sel</small><b>27</b><small>Okt</small><span class="n">1</span></div><div class="day has c-ONTIME  " data-k="2026-10-28" title="KWANGYANG VOYAGER 2609N (ON TIME)
+KMTC HOCHIMINH 2610N (ON TIME)"><small>Rab</small><b>28</b><small>Okt</small><span class="n">2</span></div><div class="day has c-ONTIME  " data-k="2026-10-29" title="STARSHIP JUPITER 2608N (ON TIME)
+INCHEON VOYAGER 2608N (ON TIME)"><small>Kam</small><b>29</b><small>Okt</small><span class="n">2</span></div><div class="day   " data-k="2026-10-30" title=""><small>Jum</small><b>30</b><small>Okt</small></div><div class="day has c-ONTIME  " data-k="2026-10-31" title="HAPPY LUCKY 2641N (ON TIME)"><small>Sab</small><b>31</b><small>Okt</small><span class="n">1</span></div><div class="day has c-ONTIME  " data-k="2026-11-01" title="BELAWAN 2610N (ON TIME)"><small>Min</small><b>1</b><small>Nov</small><span class="n">1</span></div><div class="day   " data-k="2026-11-02" title=""><small>Sen</small><b>2</b><small>Nov</small></div><div class="day   " data-k="2026-11-03" title=""><small>Sel</small><b>3</b><small>Nov</small></div><div class="day has c-ONTIME  " data-k="2026-11-04" title="KMTC SURABAYA 2608N (ON TIME)"><small>Rab</small><b>4</b><small>Nov</small><span class="n">1</span></div><div class="day has c-DELAY  " data-k="2026-11-05" title="SAWASDEE RIGEL 2610N (SKIP)
+SAWASDEE SUNRISE 2612N (DELAY)"><small>Kam</small><b>5</b><small>Nov</small><span class="n">2</span></div><div class="day   " data-k="2026-11-06" title=""><small>Jum</small><b>6</b><small>Nov</small></div><div class="day   " data-k="2026-11-07" title=""><small>Sab</small><b>7</b><small>Nov</small></div><div class="day has c-ONTIME  " data-k="2026-11-08" title="SHANGHAI VOYAGER 2609N (ON TIME)
+SAWASDEE SHANGHAI 2640N (ON TIME)"><small>Min</small><b>8</b><small>Nov</small><span class="n">2</span></div><div class="day   " data-k="2026-11-09" title=""><small>Sen</small><b>9</b><small>Nov</small></div><div class="day   " data-k="2026-11-10" title=""><small>Sel</small><b>10</b><small>Nov</small></div></div></section>
+<section class="panel"><h2>🚢 Jadwal per rute <span class="mute" id="count">(3 dari 36)</span><span id="chips"><span class="chip" style="background:var(--sea)">Tanggal 2026-10-22</span></span></h2>
+<div class="tabs" id="tabs"><button class="tab active" data-sv="" title="Semua service">Semua<small>36</small><span class="dl" title="delay">7</span></button><button class="tab " data-sv="KI1" style="border-color:#1b7fb8" title="IDSUB → HKHKG → KRKAN → KRUSN → KRPUS → SGSIN">KI1<small>9</small></button><button class="tab " data-sv="ANX" style="border-color:#e08a00" title="VNSGN → HKHKG → CNSHK → KRINC → KRPUS → KRUSN → CNSHA → THLCH">ANX<small>8</small><span class="dl" title="delay">3</span></button><button class="tab " data-sv="PCI2" style="border-color:#14935a" title="IDSRG → THLCH → CNSHA → KRPUS → KRKAN">PCI2<small>10</small><span class="dl" title="delay">4</span></button><button class="tab " data-sv="PCI" style="border-color:#6a3fc4" title="IDSUB → VNSGN → CNSHA → KRPUS → KRKAN">PCI<small>9</small></button></div>
+<div class="bar"><input id="q" type="search" placeholder="Cari vessel, voyage, port, alasan...  ( / )"><select id="fstatus"><option value="">Semua status</option><option>ON TIME</option><option>DELAY</option><option>SKIP</option></select><button id="reset">Reset</button></div>
+<div class="scroll"><table id="sched"><tbody><tr><th class="sort" data-k="vessel">Vessel / Voyage</th><th class="sort" data-k="pod">POD</th><th class="sort" data-k="etd">ETD</th><th class="sort" data-k="eta">ETA</th><th class="sort" data-k="status">Status</th><th class="sort" data-k="reason">Alasan</th><th>Aksi</th></tr><tr class="grp"><td colspan="7">Service KI1 <span class="mute">· 1 voyage · IDSUB → HKHKG → KRKAN → KRUSN → KRPUS → SGSIN</span></td></tr><tr class="row" data-i="4"><td><span class="chip" style="background:#1b7fb8">KI1</span> TIANJIN VOYAGER 2609N</td><td>IDSUB → HKHKG → KRKAN → KRUSN → KRPUS → SGSIN</td><td>2026-10-22<div class="cd">ETD 10 hari lagi</div><div class="prog "><i style="width:67.65750520833333%"></i></div></td><td>2026-10-23</td><td><span class="badge ONTIME">✓ ON TIME</span></td><td>Booking dipindahkan ke voyage ini (email 12 Okt); jadwal normal di ebiz</td><td></td></tr><tr class="grp"><td colspan="7">Service PCI2 <span class="mute">· 1 voyage · IDSRG → THLCH → CNSHA → KRPUS → KRKAN</span></td></tr><tr class="row" data-i="5"><td><span class="chip" style="background:#14935a">PCI2</span> HEUNG-A BANGKOK 2612N</td><td>IDSRG → THLCH → CNSHA → KRPUS → KRKAN</td><td>2026-10-22<div class="cd">ETD 10 hari lagi</div><div class="prog "><i style="width:67.51861631944445%"></i></div></td><td>2026-10-23</td><td><span class="badge ONTIME">✓ ON TIME</span></td><td>-</td><td></td></tr><tr class="grp"><td colspan="7">Service PCI <span class="mute">· 1 voyage · IDSUB → VNSGN → CNSHA → KRPUS → KRKAN</span></td></tr><tr class="row" data-i="3"><td><span class="chip" style="background:#6a3fc4">PCI</span> CHENNAI VOYAGER 2609N</td><td>IDSUB → VNSGN → CNSHA → KRPUS → KRKAN</td><td>2026-10-22<div class="cd">ETD 10 hari lagi</div><div class="prog "><i style="width:68.35194965277778%"></i></div></td><td>2026-10-23</td><td><span class="badge ONTIME">✓ ON TIME</span></td><td>-</td><td></td></tr></tbody></table></div><p class="mute">Klik baris untuk detail, klik judul kolom untuk mengurutkan. Pintasan: <span class="kbd">/</span> cari, <span class="kbd">Esc</span> reset.</p></section>
+<section class="panel"><h2>⛵ Open / Closing</h2><div class="scroll"><table id="oc"><tbody><tr><th>Vessel / Voyage</th><th>Open stack</th><th>Docu closing</th><th>CNTR closing</th></tr><tr class="grp"><td colspan="4">Service KI1</td></tr><tr><td>KMTC SHIMIZU 2609N<br><span class="mute">KI1 · IDSUB → HKHKG → KRKAN → KRUSN → KRPUS → SGSIN</span></td><td>2026-10-09 01:00</td><td>TBA</td><td>2026-10-12 05:00<div class="cd">sudah lewat</div></td></tr><tr><td>TIANJIN VOYAGER 2609N<br><span class="mute">KI1 · IDSUB → HKHKG → KRKAN → KRUSN → KRPUS → SGSIN</span></td><td>TBA</td><td>TBA</td><td>TBA</td></tr><tr><td>KMTC HOCHIMINH 2610N<br><span class="mute">KI1 · IDSUB → HKHKG → KRKAN → KRUSN → KRPUS → SGSIN</span></td><td>TBA</td><td>TBA</td><td>TBA</td></tr><tr class="more"><td colspan="4"><a class="link" data-x="o:KI1">Lihat semua (9)</a></td></tr><tr class="grp"><td colspan="4">Service ANX</td></tr><tr><td>KMTC XIAMEN 2608N<br><span class="mute">ANX · VNSGN → HKHKG → CNSHK → KRINC → KRPUS → KRUSN → CNSHA → THLCH</span></td><td>2026-10-10 01:00</td><td>TBA</td><td>2026-10-13 23:00<div class="cd soon">1 hari 6 jam lagi</div><div class="prog " title="Window open → closing"><i style="width:67.18531530732861%"></i></div></td></tr><tr><td>YEOSU VOYAGER 2608N<br><span class="mute">ANX · VNSGN → CNSHK → KRINC → KRPUS → KRUSN → CNSHA → THLCH</span></td><td>TBA</td><td>TBA</td><td>TBA</td></tr><tr><td>STARSHIP JUPITER 2608N<br><span class="mute">ANX · VNSGN → HKHKG → CNSHK → KRINC → KRPUS → KRUSN → CNSHA → THLCH</span></td><td>TBA</td><td>TBA</td><td>TBA</td></tr><tr class="more"><td colspan="4"><a class="link" data-x="o:ANX">Lihat semua (8)</a></td></tr><tr class="grp"><td colspan="4">Service PCI2</td></tr><tr><td>HOCHIMINH VOYAGER 2609N<br><span class="mute">PCI2 · IDSRG → THLCH → CNSHA → KRPUS → KRKAN</span></td><td>2026-10-13 01:00</td><td>TBA</td><td>2026-10-16 15:00<div class="cd ">3 hari 22 jam lagi</div><div class="prog " title="Window open → closing"><i style="width:0%"></i></div></td></tr><tr><td>HEUNG-A BANGKOK 2612N<br><span class="mute">PCI2 · IDSRG → THLCH → CNSHA → KRPUS → KRKAN</span></td><td>TBA</td><td>TBA</td><td>TBA</td></tr><tr><td>SAWASDEE SUNRISE 2612N<br><span class="mute">PCI2 · IDSRG → THLCH → CNSHA → KRPUS → KRKAN</span></td><td>TBA</td><td>TBA</td><td>TBA</td></tr><tr class="more"><td colspan="4"><a class="link" data-x="o:PCI2">Lihat semua (9)</a></td></tr><tr class="grp"><td colspan="4">Service PCI</td></tr><tr><td>CHENNAI VOYAGER 2609N<br><span class="mute">PCI · IDSUB → VNSGN → CNSHA → KRPUS → KRKAN</span></td><td>TBA</td><td>TBA</td><td>TBA</td></tr><tr><td>KWANGYANG VOYAGER 2609N<br><span class="mute">PCI · IDSUB → VNSGN → CNSHA → KRKAN → KRPUS</span></td><td>TBA</td><td>TBA</td><td>TBA</td></tr><tr><td>INCHEON VOYAGER 2608N<br><span class="mute">PCI · IDSUB → CNSHA → KRPUS → KRKAN</span></td><td>TBA</td><td>TBA</td><td>TBA</td></tr><tr class="more"><td colspan="4"><a class="link" data-x="o:PCI">Lihat semua (9)</a></td></tr></tbody></table></div></section>
+<section class="panel"><h2>📖 Riwayat perubahan</h2><ul class="tl" id="hist"><li data-i="⏱"><span class="mute">2026-10-12 16:00</span><br>HOCHIMINH VOYAGER 2609N: DELAY ETD 2026-10-16 08:30 → 2026-10-18 10:00; alasan belum ditemukan</li><li data-i="⏱"><span class="mute">2026-10-12 16:00</span><br>SAWASDEE SUNRISE 2612N: DELAY ETD 2026-10-31 23:00 → 2026-11-05 21:00; alasan belum ditemukan</li><li data-i="✨"><span class="mute">2026-10-12 16:00</span><br>SAWASDEE SHANGHAI 2640N: voyage baru di ebiz (ETD 2026-11-08 23:00)</li><li data-i="⏱"><span class="mute">2026-10-12 16:00</span><br>HOCHIMINH VOYAGER 2610N: DELAY ETD 2026-11-11 18:30 → 2026-11-13 20:00; alasan belum ditemukan</li><li data-i="✨"><span class="mute">2026-10-12 16:00</span><br>KMTC SURABAYA 2609N: voyage baru di ebiz (ETD 2026-12-02 16:30)</li><li data-i="⏱"><span class="mute">2026-10-12 16:00</span><br>SAWASDEE SUNRISE 2613N: DELAY ETD 2026-11-28 23:00 → 2026-12-03 21:00; alasan belum ditemukan</li><li data-i="✨"><span class="mute">2026-10-12 16:00</span><br>KMTC SHIMIZU 2611N: voyage baru di ebiz (ETD 2026-12-06 19:30)</li><li data-i="✨"><span class="mute">2026-10-12 16:00</span><br>SAWASDEE SHANGHAI 2641N: voyage baru di ebiz (ETD 2026-12-06 23:00)</li><li data-i="✨"><span class="mute">2026-10-12 16:00</span><br>SHANGHAI VOYAGER 2610N: voyage baru di ebiz (ETD 2026-12-07 18:00)</li><li data-i="✨"><span class="mute">2026-10-12 16:00</span><br>HOCHIMINH VOYAGER 2611N: voyage baru di ebiz (ETD 2026-12-11 20:00)</li><li data-i="⛔"><span class="mute">2026-10-12 16:00</span><br>SAWASDEE RIGEL 2610N: SKIP (hilang dari ebiz, sebelumnya ETD 2026-11-05 01:30); alasan belum ditemukan</li><li data-i="⛵"><span class="mute">2026-10-12</span><br>Open/closing diisi: KMTC XIAMEN 2608N, HOCHIMINH VOYAGER 2609N, KMTC SHIMIZU 2609N</li><li data-i="⛔"><span class="mute">2026-10-12 11:17</span><br>YEOSU VOYAGER 2608N: berth congestion IDJKT 1-2 hari (ETD 27 Okt); HKHKG di-skip (email Sinokor)</li><li data-i="⏱"><span class="mute">2026-10-12 11:17</span><br>YEOSU VOYAGER 2609N: berth congestion IDJKT 1 hari (ETD 22 Nov) (email Sinokor)</li><li data-i="⏱"><span class="mute">2026-10-12</span><br>KMTC XIAMEN 2608N ditandai DELAY di ebiz (ETD 16 Okt 14:00); alasan belum ditemukan</li><li data-i="⛵"><span class="mute">2026-10-12</span><br>Data jadwal Jakarta diambil dari ebiz (30 voyage s/d 28 Nov); closing semua TBA</li></ul></section>
+</main>
+<dialog id="dlg"><b id="dtitle">Teks delay notice</b><textarea id="dtext" readonly=""></textarea>
+<div class="bar"><button id="copy">Salin teks</button><button id="close">Tutup</button><span class="mute" id="copied"></span></div>
+<p class="mute">Hanya membuat teks. Tidak ada email yang dikirim; tempel ke email Outlook sendiri.</p></dialog>
+<script src="./Vessel Monitor_files/data.js"></script>
+<script>
+let D=window.DASHBOARD_DATA;const $=id=>document.getElementById(id);
+const cls={"DELAY":"DELAY","SKIP":"SKIP","VESSEL CHANGE":"VC","ON TIME":"ONTIME"};
+const ico={"DELAY":"&#9201;","SKIP":"&#9940;","VESSEL CHANGE":"&#8644;","ON TIME":"&#10003;"};
+const palette=["#1b7fb8","#e08a00","#14935a","#6a3fc4","#d6336c","#0b7285"];
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const d=s=>s?s.slice(0,10):"-";
+const T=s=>{const t=Date.parse((s||"").replace(" ","T"));return isNaN(t)?null:t};
+const store={get(k,f){try{const v=localStorage.getItem(k);return v==null?f:JSON.parse(v)}catch(e){return f}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const LIMIT=3;
+const state={q:"",status:"",service:store.get("service",""),day:"",closing:false,sortKey:null,asc:true,open:new Set(),expanded:new Set()};
+let first=true;
+const services=()=>[...new Set(D.voyages.map(v=>v.service))];
+const svColor=sv=>palette[services().indexOf(sv)%palette.length];
+const route=svc=>{const v=D.voyages.find(x=>x.service===svc);return v?v.pod:""};
+const groupBy=list=>services().map(sv=>[sv,list.filter(v=>v.service===sv)]).filter(g=>g[1].length);
+
+// tema
+function applyTheme(t){if(t)document.documentElement.setAttribute("data-theme",t);else document.documentElement.removeAttribute("data-theme")}
+let theme=store.get("theme",null);if(!theme&&matchMedia("(prefers-color-scheme:dark)").matches)theme="dark";applyTheme(theme);
+$("theme").onclick=()=>{theme=theme==="dark"?"light":"dark";applyTheme(theme);store.set("theme",theme)};
+$("print").onclick=()=>window.print();
+
+// jam & umur data
+function tick(){
+ const n=new Date();$("clock").textContent=n.toLocaleString("id-ID",{timeZone:"Asia/Jakarta",weekday:"short",day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false})+" WIB";
+ const m=Math.max(0,Math.round((n-new Date(D.updatedAt))/6e4));
+ $("upd").textContent="Data diperbarui "+(m<1?"baru saja":m<60?m+" menit lalu":m<1440?Math.floor(m/60)+" jam lalu":Math.floor(m/1440)+" hari lalu")+" · "+D.updatedAt.replace("T"," ").slice(0,16);
+}
+setInterval(tick,1000);
+
+function closingSoon(v){
+ if(v.status==="SKIP")return false;const now=Date.now();
+ return [v.docClosing,v.cntrClosing].some(s=>{const t=T(s);return t&&t>now&&t-now<=48*36e5});
+}
+function countUp(el,to){
+ if(!first||matchMedia("(prefers-reduced-motion:reduce)").matches){el.textContent=to;return}
+ const t0=performance.now();(function f(t){const p=Math.min(1,(t-t0)/700);el.textContent=Math.round(to*p);if(p<1)requestAnimationFrame(f)})(t0);
+}
+function cards(){
+ const c=s=>D.voyages.filter(v=>v.status===s).length;
+ const items=[["&#9973;","Semua",D.voyages.length,"","",""],["&#9201;","Delay",c("DELAY"),"d","DELAY"],["&#9940;","Skip",c("SKIP"),"s","SKIP"],["&#8644;","Vessel change",c("VESSEL CHANGE"),"v","VESSEL CHANGE"],["&#10003;","On time",c("ON TIME"),"o","ON TIME"],["&#9888;","Closing &lt; 48 jam",D.voyages.filter(closingSoon).length,"c","__closing"]];
+ $("cards").innerHTML=items.map(([i,l,n,k,s],ix)=>`<button class="card ${k} ${(s==="__closing"?state.closing:state.status===s&&!state.closing)?"active":""}" data-s="${s||""}" style="animation-delay:${ix*60}ms"><span class="ic">${i}</span><span><span class="mute">${l}</span><b data-n="${n}">${first?0:n}</b></span></button>`).join("");
+ $("cards").querySelectorAll(".card").forEach(b=>b.onclick=()=>{const s=b.dataset.s;state.closing=s==="__closing"?!state.closing:false;state.status=s==="__closing"?"":s;$("fstatus").value=state.status;render()});
+ if(first)$("cards").querySelectorAll("b").forEach(b=>countUp(b,+b.dataset.n));
+}
+
+// kalender 30 hari
+function calendar(){
+ const rank={"DELAY":4,"SKIP":3,"VESSEL CHANGE":2,"ON TIME":1};const cc={"DELAY":"DELAY","SKIP":"SKIP","VESSEL CHANGE":"VESSEL","ON TIME":"ONTIME"};
+ const by={};D.voyages.forEach(v=>{if(!v.etd)return;const k=v.etd.slice(0,10);(by[k]=by[k]||[]).push(v)});
+ const base=new Date();base.setHours(0,0,0,0);let h="";
+ for(let i=0;i<30;i++){
+  const dt=new Date(base.getTime()+i*864e5),k=dt.getFullYear()+"-"+String(dt.getMonth()+1).padStart(2,"0")+"-"+String(dt.getDate()).padStart(2,"0");
+  const l=by[k]||[],worst=l.reduce((a,v)=>rank[v.status]>(rank[a]||0)?v.status:a,"");
+  h+=`<div class="day ${l.length?"has c-"+cc[worst]:""} ${i===0?"today":""} ${state.day===k?"sel":""}" data-k="${k}" title="${l.map(v=>v.vessel+" "+v.voyage+" ("+v.status+")").join("\n")}"><small>${dt.toLocaleDateString("id-ID",{weekday:"short"})}</small><b>${dt.getDate()}</b><small>${dt.toLocaleDateString("id-ID",{month:"short"})}</small>${l.length?`<span class="n">${l.length}</span>`:""}</div>`;
+ }
+ $("cal").innerHTML=h;
+ $("cal").querySelectorAll(".day.has").forEach(e=>e.onclick=()=>{state.day=state.day===e.dataset.k?"":e.dataset.k;render()});
+}
+
+function tabs(){
+ const mk=(sv,label,n,dl,col)=>`<button class="tab ${state.service===sv?"active":""}" data-sv="${esc(sv)}" ${col&&state.service!==sv?`style="border-color:${col}"`:""} title="${esc(sv?route(sv):"Semua service")}">${esc(label)}<small>${n}</small>${dl?`<span class="dl" title="delay">${dl}</span>`:""}</button>`;
+ $("tabs").innerHTML=mk("","Semua",D.voyages.length,D.voyages.filter(v=>v.status==="DELAY").length)+services().map(sv=>{const l=D.voyages.filter(v=>v.service===sv);return mk(sv,sv,l.length,l.filter(v=>v.status==="DELAY").length,svColor(sv))}).join("");
+ $("tabs").querySelectorAll(".tab").forEach(b=>b.onclick=()=>{state.service=b.dataset.sv;store.set("service",state.service);state.expanded.clear();render()});
+}
+
+const val=(v,k)=>({vessel:v.vessel+" "+v.voyage,pod:v.pod,etd:v.etd||"",eta:v.eta||"",status:v.status,reason:v.reason||""}[k]);
+function rows(){
+ let r=D.voyages.map((v,i)=>({...v,i}));
+ const q=state.q.toLowerCase();
+ if(q)r=r.filter(v=>[v.vessel,v.voyage,v.pod,v.reason,v.status,v.service].join(" ").toLowerCase().includes(q));
+ if(state.status)r=r.filter(v=>v.status===state.status);
+ if(state.service)r=r.filter(v=>v.service===state.service);
+ if(state.closing)r=r.filter(closingSoon);
+ if(state.day)r=r.filter(v=>(v.etd||"").slice(0,10)===state.day);
+ if(state.sortKey)r.sort((a,b)=>(val(a,state.sortKey)>val(b,state.sortKey)?1:-1)*(state.asc?1:-1));
+ return r;
+}
+function etdCell(v){
+ const t=T(v.etd),o=T(v.oldEtd);let h=v.oldEtd&&v.etd&&v.oldEtd!==v.etd?`<s>${d(v.oldEtd)}</s> → <b>${d(v.etd)}</b>`:d(v.etd||v.oldEtd);
+ if(o&&t&&t!==o){const dd=Math.round((t-o)/864e5);h+=` <span class="${dd>0?"up":"down"}">${dd>0?"&#9650; +":"&#9660; "}${dd} hari</span>`}
+ if(t){const days=(t-Date.now())/864e5;
+  h+=days<0?`<div class="cd">sudah berangkat</div>`:`<div class="cd">ETD ${days<1?"hari ini":Math.ceil(days)+" hari lagi"}</div><div class="prog ${days<3?"hot":""}"><i style="width:${Math.max(6,100-Math.min(30,days)/30*100)}%"></i></div>`}
+ return h;
+}
+function schedule(){
+ const heads=[["vessel","Vessel / Voyage"],["pod","POD"],["etd","ETD"],["eta","ETA"],["status","Status"],["reason","Alasan"]];
+ const arrow=k=>state.sortKey===k?(state.asc?" ▲":" ▼"):"";
+ const r=rows();$("count").textContent=`(${r.length} dari ${D.voyages.length})`;
+ $("chips").innerHTML=[state.day&&`Tanggal ${state.day}`,state.closing&&"Closing < 48 jam"].filter(Boolean).map(t=>`<span class="chip" style="background:var(--sea)">${t}</span>`).join(" ");
+ let h="<tr>"+heads.map(([k,l])=>`<th class="sort" data-k="${k}">${l}${arrow(k)}</th>`).join("")+"<th>Aksi</th></tr>";
+ if(!r.length)h+=`<tr><td colspan="7" class="empty">Tidak ada data yang cocok.</td></tr>`;
+ const rowHtml=v=>{
+  let x=`<tr class="row" data-i="${v.i}"><td><span class="chip" style="background:${svColor(v.service)}">${esc(v.service)}</span> ${esc(v.vessel)} ${esc(v.voyage)}</td><td>${esc(v.pod)}</td><td>${etdCell(v)}</td><td>${d(v.eta)}</td><td><span class="badge ${cls[v.status]}">${ico[v.status]} ${v.status}</span></td><td>${esc(v.reason)||"-"}</td><td>${["DELAY","SKIP","VESSEL CHANGE"].includes(v.status)?`<a class="link" data-n="${v.i}">Buat notice</a>`:""}</td></tr>`;
+  if(state.open.has(v.i)){
+   const s=v.source;
+   x+=`<tr class="detail"><td colspan="7"><b>Sumber:</b> ${s?`${esc(s.from)} · ${esc(s.date)}<br>Subjek: ${esc(s.subject)}`:"tidak ada email terkait"}${v.etaJkt?`<br><b>ETA JKT:</b> ${esc(v.etaJkt)}${v.terminal?` &nbsp; <b>Terminal:</b> ${esc(v.terminal)}`:""}`:""}<br><b>Open stack:</b> ${esc(v.openStack||"-")} &nbsp; <b>Docu closing:</b> ${esc(v.docClosing||"-")} &nbsp; <b>CNTR closing:</b> ${esc(v.cntrClosing||"-")}${v.closingSource?`<br><span class="mute">${esc(v.closingSource)}</span>`:""}</td></tr>`;
+  }
+  return x;
+ };
+ groupBy(r).forEach(([svc,list])=>{
+  if(!state.service)h+=`<tr class="grp"><td colspan="7">Service ${esc(svc)} <span class="mute">· ${list.length} voyage · ${esc(route(svc))}</span></td></tr>`;
+  const key="s:"+svc,all=state.expanded.has(key),show=all?list:list.slice(0,LIMIT);
+  show.forEach(v=>h+=rowHtml(v));
+  if(list.length>LIMIT)h+=`<tr class="more"><td colspan="7"><a class="link" data-x="${esc(key)}">${all?"Ringkas":`Lihat semua (${list.length})`}</a></td></tr>`;
+ });
+ $("sched").innerHTML=h;
+ $("sched").querySelectorAll("th.sort").forEach(th=>th.onclick=()=>{const k=th.dataset.k;state.asc=state.sortKey===k?!state.asc:true;state.sortKey=k;render()});
+ $("sched").querySelectorAll("tr.row").forEach(tr=>tr.onclick=e=>{if(e.target.closest("a"))return;const i=+tr.dataset.i;state.open.has(i)?state.open.delete(i):state.open.add(i);render()});
+ $("sched").querySelectorAll("a[data-x]").forEach(a=>a.onclick=()=>toggleX(a.dataset.x));
+ $("sched").querySelectorAll("a[data-n]").forEach(a=>a.onclick=()=>openNotice(D.voyages[+a.dataset.n]));
+}
+const toggleX=k=>{state.expanded.has(k)?state.expanded.delete(k):state.expanded.add(k);render()};
+
+function countdown(s,openS){
+ const t=T(s);if(t==null)return"";
+ const ms=t-Date.now();if(ms<0)return'<div class="cd">sudah lewat</div>';
+ const h=Math.floor(ms/36e5),dd=Math.floor(h/24),o=T(openS);
+ let bar="";if(o&&t>o){const p=Math.max(0,Math.min(100,(Date.now()-o)/(t-o)*100));bar=`<div class="prog ${h<24?"hot":""}" title="Window open &rarr; closing"><i style="width:${p}%"></i></div>`}
+ return `<div class="cd ${h<24?"hot":h<48?"soon":""}">${dd>0?dd+" hari "+h%24+" jam":h+" jam"} lagi</div>${bar}`;
+}
+function oc(){
+ const list=D.voyages.filter(v=>v.status!=="SKIP"&&(!state.service||v.service===state.service));
+ let h="<tr><th>Vessel / Voyage</th><th>Open stack</th><th>Docu closing</th><th>CNTR closing</th></tr>";
+ const row=v=>`<tr><td>${esc(v.vessel)} ${esc(v.voyage)}<br><span class="mute">${esc(v.service)} · ${esc(v.pod)}</span></td><td>${esc(v.openStack)||"-"}</td><td>${esc(v.docClosing)||"-"}${countdown(v.docClosing,v.openStack)}</td><td>${esc(v.cntrClosing)||"-"}${countdown(v.cntrClosing,v.openStack)}</td></tr>`;
+ groupBy(list).forEach(([svc,l])=>{
+  if(!state.service)h+=`<tr class="grp"><td colspan="4">Service ${esc(svc)}</td></tr>`;
+  const key="o:"+svc,all=state.expanded.has(key);
+  (all?l:l.slice(0,LIMIT)).forEach(v=>h+=row(v));
+  if(l.length>LIMIT)h+=`<tr class="more"><td colspan="4"><a class="link" data-x="${esc(key)}">${all?"Ringkas":`Lihat semua (${l.length})`}</a></td></tr>`;
+ });
+ if(!list.length)h+=`<tr><td colspan="4" class="empty">Tidak ada data.</td></tr>`;
+ $("oc").innerHTML=h;
+ $("oc").querySelectorAll("a[data-x]").forEach(a=>a.onclick=()=>toggleX(a.dataset.x));
+}
+
+function history(){
+ const ic=t=>/skip/i.test(t)?"&#9940;":/open|closing/i.test(t)?"&#9973;":/delay|congestion|bergeser/i.test(t)?"&#9201;":/baru/i.test(t)?"&#10024;":"i";
+ $("hist").innerHTML=D.history.map(h=>`<li data-i="${ic(h.text)}"><span class="mute">${esc(h.at)}</span><br>${esc(h.text)}</li>`).join("")||'<li class="mute">Belum ada perubahan.</li>';
+}
+
+function openNotice(v){
+ const what=v.status==="SKIP"?"akan di-SKIP (tidak singgah)":v.status==="VESSEL CHANGE"?"mengalami pergantian vessel":"mengalami penundaan jadwal";
+ const t=`Subject: ${v.status} NOTICE // ${v.vessel} ${v.voyage} // ${v.pod}
+
+Dear Valued Customer,
+
+Kami informasikan bahwa ${v.vessel} V.${v.voyage} (${v.pod}) ${what}.
+
+${v.status==="DELAY"?`ETD baru : ${d(v.etd)}${v.oldEtd?` (sebelumnya ${d(v.oldEtd)})`:""}
+ETA baru : ${d(v.eta)}${v.oldEta?` (sebelumnya ${d(v.oldEta)})`:""}
+`:""}Alasan   : ${v.reason&&!v.reason.includes("belum ditemukan")?v.reason:"[isi alasan]"}
+Open / Closing akan diinformasikan kembali setelah dikonfirmasi.
+
+Mohon maaf atas ketidaknyamanan ini dan terima kasih atas pengertiannya.
+
+Best regards,
+Heung-A Line Indonesia`;
+ $("dtitle").textContent="Teks "+v.status+" notice · "+v.vessel+" "+v.voyage;$("dtext").value=t;$("copied").textContent="";$("dlg").showModal();
+}
+$("copy").onclick=async()=>{try{await navigator.clipboard.writeText($("dtext").value);$("copied").textContent="Tersalin"}catch(e){$("dtext").select();document.execCommand("copy");$("copied").textContent="Tersalin"}};
+$("close").onclick=()=>$("dlg").close();
+
+// CSV
+$("csv").onclick=()=>{
+ const q=s=>`"${String(s??"").replace(/"/g,'""')}"`;
+ const lines=[["Service","Vessel","Voyage","POD","ETD","ETA","Status","Alasan","Open stack","CNTR closing"].join(",")].concat(rows().map(v=>[v.service,v.vessel,v.voyage,v.pod,v.etd,v.eta,v.status,v.reason,v.openStack,v.cntrClosing].map(q).join(",")));
+ const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["﻿"+lines.join("\r\n")],{type:"text/csv"}));a.download="vessel-schedule.csv";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+};
+
+// refresh data
+$("refresh").onclick=()=>{
+ $("refresh").textContent="Memuat...";
+ const s=document.createElement("script");s.src="data/data.js?t="+Date.now();
+ s.onload=()=>{D=window.DASHBOARD_DATA;state.expanded.clear();render();tick();$("refresh").innerHTML="&#8635; Refresh";s.remove()};
+ s.onerror=()=>{$("refresh").innerHTML="&#8635; Gagal, coba lagi";s.remove()};
+ document.head.append(s);
+};
+
+$("q").oninput=e=>{state.q=e.target.value;schedule()};
+$("fstatus").onchange=e=>{state.status=e.target.value;state.closing=false;render()};
+function resetAll(){state.q="";state.status="";state.service="";state.day="";state.closing=false;state.sortKey=null;store.set("service","");state.expanded.clear();$("q").value="";$("fstatus").value="";render()}
+$("reset").onclick=resetAll;
+document.addEventListener("keydown",e=>{
+ if(e.key==="/"&&!/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)){e.preventDefault();$("q").focus()}
+ else if(e.key==="Escape"&&!$("dlg").open)resetAll();
+});
+
+function render(){
+ $("pol").textContent="· POL "+D.pol;
+ const st=[...new Set(D.voyages.map(v=>v.status))];
+ $("fstatus").innerHTML='<option value="">Semua status</option>'+st.map(s=>`<option ${s===state.status?"selected":""}>${s}</option>`).join("");
+ cards();calendar();tabs();schedule();oc();history();first=false;
+}
+render();tick();
+setInterval(oc,60000);
+</script>
+
+
+</body></html>
